@@ -1,380 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Senior IT Engineer, SaaS Applications — Prep Tracker</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backend engineering plan: playback-config-service</title>
+<meta name="description" content="A six-month plan to return to hands-on backend engineering, built around one Python service on AWS with published load-test numbers.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#050810;
-  --panel:#0c1220;
-  --panel-2:#111a2b;
-  --border:#1a2540;
-  --border-soft:#141d33;
-  --text:#e8edf7;
-  --text-dim:#8b98b4;
-  --text-faint:#5a6680;
-  --mint:#00d9a3;
-  --cyan:#22d3ee;
-  --amber:#fbbf24;
-  --red:#f87171;
-  --mono:'JetBrains Mono',monospace;
-  --sans:'Inter',-apple-system,sans-serif;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--sans);
-  font-size:15px;
-  line-height:1.55;
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34,211,238,.05), transparent),
-    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.008) 3px);
-  min-height:100vh;
-}
-::selection{background:rgba(0,217,163,.25)}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:#2a3a5f}
+  :root {
+    --bg: #f2f5f7;
+    --surface: #ffffff;
+    --ink: #14202b;
+    --muted: #51606d;
+    --rule: #c9d3db;
+    --accent: #0b6f78;
+    --accent-soft: #d6ecee;
+    --warm: #b4570a;
+    --warm-soft: #f8e6d3;
+    --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #101a22;
+      --surface: #17242e;
+      --ink: #e7eef3;
+      --muted: #9fb0bd;
+      --rule: #2c3d4a;
+      --accent: #5cc6cf;
+      --accent-soft: #14343a;
+      --warm: #f0a15b;
+      --warm-soft: #3a2a18;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #101a22;
+    --surface: #17242e;
+    --ink: #e7eef3;
+    --muted: #9fb0bd;
+    --rule: #2c3d4a;
+    --accent: #5cc6cf;
+    --accent-soft: #14343a;
+    --warm: #f0a15b;
+    --warm-soft: #3a2a18;
+  }
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 28px 120px}
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
-/* ---------- header ---------- */
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px 0;border-bottom:1px solid var(--border-soft);
-  font-family:var(--mono);font-size:11px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--text-faint);
-}
-.topbar .live{display:flex;align-items:center;gap:8px;color:var(--mint)}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--mint);animation:pulse 1.6s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,217,163,.4)}50%{opacity:.55;box-shadow:0 0 0 5px rgba(0,217,163,0)}}
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 
-header{padding:56px 0 40px}
-.eyebrow{
-  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--cyan);margin-bottom:16px;display:flex;align-items:center;gap:12px;
-}
-.eyebrow::before{content:"";width:28px;height:1px;background:var(--cyan)}
-h1{
-  font-size:clamp(30px,4.6vw,46px);font-weight:800;letter-spacing:-.02em;line-height:1.12;
-  max-width:720px;
-}
-h1 em{font-style:normal;color:var(--mint)}
-.meta{
-  display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:22px;
-  font-family:var(--mono);font-size:12px;color:var(--text-dim);letter-spacing:.04em;
-}
-.meta span b{color:var(--text);font-weight:600}
-.meta .pay b{color:var(--amber)}
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
 
-/* ---------- overall progress ---------- */
-.overall{
-  margin-top:36px;background:var(--panel);border:1px solid var(--border);
-  border-radius:12px;padding:22px 24px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;
-}
-.overall .label{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px}
-.overall .big{font-family:var(--mono);font-size:34px;font-weight:700;color:var(--mint);line-height:1}
-.overall .bar-wrap{flex:1;min-width:220px}
-.bar{height:8px;background:#0a1020;border:1px solid var(--border-soft);border-radius:99px;overflow:hidden}
-.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--mint));border-radius:99px;transition:width .45s cubic-bezier(.4,0,.2,1)}
-.overall .count{font-family:var(--mono);font-size:12px;color:var(--text-dim);margin-top:8px;letter-spacing:.06em}
-.reset{
-  background:transparent;border:1px solid var(--border);color:var(--text-dim);
-  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-  padding:9px 16px;border-radius:8px;cursor:pointer;transition:.15s;
-}
-.reset:hover{border-color:var(--red);color:var(--red)}
+  header.hero { padding: 72px 0 40px; }
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    margin: 0 0 20px;
+    max-width: 16ch;
+  }
+  .lede { font-size: 1.2rem; max-width: 56ch; color: var(--muted); margin: 0 0 12px; }
+  .status { font-size: 0.95rem; color: var(--muted); margin: 0; }
 
-/* ---------- strategy note ---------- */
-.note{
-  margin-top:28px;border-left:3px solid var(--amber);background:rgba(251,191,36,.05);
-  padding:16px 20px;border-radius:0 10px 10px 0;font-size:14px;color:var(--text-dim);
-}
-.note b{color:var(--amber);font-weight:600}
+  .diagram {
+    margin: 36px 0 0;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 20px 16px 12px;
+  }
+  .diagram svg { width: 100%; height: auto; display: block; }
+  .diagram figcaption { font-size: 0.9rem; color: var(--muted); margin-top: 8px; }
+  .scroll-x { overflow-x: auto; }
+  .scroll-x svg { min-width: 640px; }
 
-/* ---------- priority legend ---------- */
-.legend{display:flex;gap:18px;flex-wrap:wrap;margin:44px 0 8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em}
-.legend span{display:flex;align-items:center;gap:7px;color:var(--text-dim)}
-.chip{width:10px;height:10px;border-radius:3px}
-.chip.p0{background:var(--mint)}.chip.p1{background:var(--cyan)}.chip.p2{background:var(--text-faint)}
+  section { padding: 44px 0; border-top: 1px solid var(--rule); }
+  h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.7rem;
+    letter-spacing: -0.01em;
+    margin: 0 0 16px;
+  }
+  h3 { font-family: var(--display); font-weight: 500; font-size: 1.15rem; margin: 24px 0 6px; }
+  p { margin: 0 0 14px; max-width: 68ch; }
+  ul { margin: 0 0 14px; padding-left: 1.2rem; max-width: 68ch; }
+  li { margin-bottom: 6px; }
 
-/* ---------- sections ---------- */
-section{margin-top:22px}
-.sec{
-  background:var(--panel);border:1px solid var(--border);border-radius:14px;
-  overflow:hidden;transition:border-color .2s;
-}
-.sec:hover{border-color:#25355c}
-.sec-head{
-  display:flex;align-items:flex-start;gap:18px;padding:24px 26px 20px;
-  border-left:3px solid var(--accent,var(--mint));
-}
-.sec-num{
-  font-family:var(--mono);font-size:12px;font-weight:700;color:var(--accent,var(--mint));
-  border:1px solid var(--border);border-radius:8px;padding:6px 10px;flex-shrink:0;margin-top:2px;
-  background:var(--panel-2);
-}
-.sec-title{flex:1;min-width:0}
-.sec-title h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
-.sec-title .why{font-size:13px;color:var(--text-dim);margin-top:5px;max-width:640px}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.badge{
-  font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  padding:4px 9px;border-radius:5px;border:1px solid;
-}
-.badge.p0{color:var(--mint);border-color:rgba(0,217,163,.35);background:rgba(0,217,163,.07)}
-.badge.p1{color:var(--cyan);border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.07)}
-.badge.gap{color:var(--amber);border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.07)}
-.badge.head{color:var(--mint);border-color:rgba(0,217,163,.5);background:rgba(0,217,163,.12)}
-.badge.building{color:var(--cyan);border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.12)}
-.sec-prog{
-  display:flex;align-items:center;gap:12px;flex-shrink:0;
-  font-family:var(--mono);font-size:12px;color:var(--text-dim);
-}
-.sec-prog .mini{width:76px}
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  @media (max-width: 760px) { .two { grid-template-columns: 1fr; gap: 0; } }
 
-ul.items{list-style:none;padding:6px 14px 18px}
-li.item{
-  display:flex;align-items:flex-start;gap:14px;padding:11px 12px;border-radius:9px;
-  cursor:pointer;transition:background .12s;user-select:none;
-}
-li.item:hover{background:rgba(255,255,255,.025)}
-/* radar-node checkbox */
-.node{
-  flex-shrink:0;width:19px;height:19px;border-radius:50%;margin-top:2px;
-  border:1.5px solid #2c3c63;position:relative;transition:.18s;
-}
-li.item:hover .node{border-color:var(--cyan)}
-.node::after{
-  content:"";position:absolute;inset:4px;border-radius:50%;background:var(--mint);
-  transform:scale(0);transition:transform .2s cubic-bezier(.34,1.56,.64,1);
-}
-li.done .node{border-color:var(--mint);box-shadow:0 0 10px rgba(0,217,163,.35)}
-li.done .node::after{transform:scale(1)}
-.item .txt{flex:1}
-.item .txt .t{font-size:14.5px;font-weight:500;transition:color .15s}
-li.done .t{color:var(--text-faint);text-decoration:line-through;text-decoration-color:rgba(0,217,163,.4)}
-.item .txt .d{font-size:12.5px;color:var(--text-faint);margin-top:2px}
-.tag{
-  flex-shrink:0;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
-  padding:3px 7px;border-radius:4px;margin-top:3px;border:1px solid;
-}
-.tag.gap{color:var(--amber);border-color:rgba(251,191,36,.3)}
-.tag.head{color:var(--mint);border-color:rgba(0,217,163,.35)}
-.tag.building{color:var(--cyan);border-color:rgba(34,211,238,.35)}
+  dl.stack { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; max-width: 68ch; }
+  dl.stack dt { font-weight: 600; }
+  dl.stack dd { margin: 0; color: var(--muted); }
 
-/* ---------- footer ---------- */
-footer{
-  margin-top:56px;padding-top:24px;border-top:1px solid var(--border-soft);
-  font-family:var(--mono);font-size:11px;color:var(--text-faint);letter-spacing:.08em;
-  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
-}
-@media(max-width:640px){
-  .sec-head{flex-wrap:wrap}
-  .sec-prog{width:100%;margin-top:6px}
-  .sec-prog .mini{flex:1}
-}
+  .targets {
+    background: var(--warm-soft);
+    border-left: 4px solid var(--warm);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    max-width: 68ch;
+    margin-top: 18px;
+  }
+  .targets p { margin: 0; }
+
+  ol.months { list-style: none; margin: 0; padding: 0; max-width: 760px; }
+  ol.months li {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+    margin: 0;
+  }
+  ol.months li:last-child { border-bottom: 0; }
+  .month { font-family: var(--display); font-weight: 700; color: var(--accent); font-size: 1.1rem; }
+  .test { font-weight: 600; }
+  .focus { color: var(--muted); font-size: 0.97rem; }
+
+  .table-wrap { overflow-x: auto; max-width: 760px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.97rem; min-width: 440px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--rule); }
+  th { font-family: var(--display); font-weight: 500; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  footer { padding: 36px 0 64px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.95rem; }
+  footer p { max-width: none; }
 </style>
 </head>
 <body>
-<div class="wrap">
+<main class="wrap">
 
-  <div class="topbar">
-    <span>CRUNCHYROLL · SENIOR IT ENGINEER · SAAS APPLICATIONS</span>
-    <span class="live"><span class="dot"></span>TRACKING ACTIVE</span>
-  </div>
+  <header class="hero">
+    <h1>One backend service, built in public over six months</h1>
+    <p class="lede">A plan to return to hands-on backend engineering, built around a Python service on AWS and finished when it has load-test numbers anyone can check.</p>
+    <p class="status">Plan written 31 October 2026. Window: November 2026 to April 2027. The project is in progress, so everything below is a plan, not a result, until the milestones say otherwise.</p>
+    <p class="status"><a href="tracker.html">Open the progress tracker</a>, a checklist, board and problem list for the same plan. Ticks are saved in your own browser.</p>
 
-  <header>
-    <div class="eyebrow">PREP MISSION BRIEF</div>
-    <h1>What to work on for the <em>SaaS Applications Engineer</em> role</h1>
-    <div class="meta">
-      <span>LOCATION <b>Los Angeles, CA · Hybrid (Tue–Thu)</b></span>
-      <span class="pay">RANGE <b>$133,100 – $166,400</b></span>
-      <span>SCALE <b>~2,000 users</b></span>
-      <span>REPORTS TO <b>Senior Director of IT</b></span>
-    </div>
+    <figure class="diagram">
+      <div class="scroll-x">
+      <svg viewBox="0 0 860 300" role="img" aria-labelledby="dtitle ddesc" xmlns="http://www.w3.org/2000/svg">
+        <title id="dtitle">Architecture of playback-config-service</title>
+        <desc id="ddesc">A client calls a load balancer, which routes to FastAPI tasks on ECS Fargate. The API reads from an ElastiCache Redis cache and a PostgreSQL database on RDS, and publishes telemetry events to an SQS queue consumed by a worker that writes to the database.</desc>
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+          </marker>
+        </defs>
+        <style>
+          .box { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+          .hot { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+          .store { fill: var(--warm-soft); stroke: var(--warm); stroke-width: 1.5; }
+          .t { font-family: var(--display); font-size: 15px; font-weight: 700; fill: var(--ink); }
+          .s { font-family: var(--body); font-size: 12.5px; fill: var(--muted); }
+          .ln { stroke: var(--muted); stroke-width: 1.5; fill: none; marker-end: url(#arr); }
+          .lb { font-family: var(--body); font-size: 12px; font-style: italic; fill: var(--muted); }
+        </style>
 
-    <div class="overall">
-      <div>
-        <div class="label">Overall Readiness</div>
-        <div class="big" id="overallPct">0%</div>
+        <rect class="box" x="10" y="115" width="110" height="64" rx="6"/>
+        <text class="t" x="65" y="143" text-anchor="middle">Client</text>
+        <text class="s" x="65" y="162" text-anchor="middle">player, tools</text>
+
+        <rect class="box" x="170" y="115" width="120" height="64" rx="6"/>
+        <text class="t" x="230" y="143" text-anchor="middle">Load balancer</text>
+        <text class="s" x="230" y="162" text-anchor="middle">ALB, TLS</text>
+
+        <rect class="hot" x="340" y="95" width="170" height="104" rx="6"/>
+        <text class="t" x="425" y="127" text-anchor="middle">FastAPI</text>
+        <text class="s" x="425" y="147" text-anchor="middle">ECS Fargate tasks</text>
+        <text class="s" x="425" y="165" text-anchor="middle">config + telemetry API</text>
+
+        <rect class="store" x="580" y="20" width="150" height="64" rx="6"/>
+        <text class="t" x="655" y="48" text-anchor="middle">Redis</text>
+        <text class="s" x="655" y="67" text-anchor="middle">ElastiCache, hot reads</text>
+
+        <rect class="store" x="580" y="118" width="150" height="64" rx="6"/>
+        <text class="t" x="655" y="146" text-anchor="middle">PostgreSQL</text>
+        <text class="s" x="655" y="165" text-anchor="middle">RDS, source of truth</text>
+
+        <rect class="box" x="400" y="232" width="120" height="56" rx="6"/>
+        <text class="t" x="460" y="257" text-anchor="middle">SQS</text>
+        <text class="s" x="460" y="275" text-anchor="middle">telemetry events</text>
+
+        <rect class="hot" x="580" y="232" width="150" height="56" rx="6"/>
+        <text class="t" x="655" y="257" text-anchor="middle">Worker</text>
+        <text class="s" x="655" y="275" text-anchor="middle">batches writes</text>
+
+        <path class="ln" d="M120,147 L168,147"/>
+        <path class="ln" d="M290,147 L338,147"/>
+        <path class="ln" d="M510,120 L578,58"/>
+        <path class="ln" d="M510,147 L578,150"/>
+        <path class="ln" d="M440,199 L450,230"/>
+        <path class="ln" d="M520,260 L578,260"/>
+        <path class="ln" d="M690,230 L690,184"/>
+        <text class="lb" x="545" y="92">cache-aside</text>
+        <text class="lb" x="455" y="218">publish</text>
+
+        <text class="s" x="765" y="40">Terraform provisions</text>
+        <text class="s" x="765" y="58">every box. CI builds</text>
+        <text class="s" x="765" y="76">and deploys the image.</text>
+      </svg>
       </div>
-      <div class="bar-wrap">
-        <div class="bar"><i id="overallBar"></i></div>
-        <div class="count" id="overallCount">0 / 0 objectives complete</div>
-      </div>
-      <button class="reset" id="resetBtn">Reset</button>
-    </div>
-
-    <div class="note">
-      <b>Read this first:</b> the JD asks for 8+ years of progressive Corporate IT experience — that's the hardest gate and no checklist replaces it. Your strongest angle is real, recent admin work: you're already administering Glean and its Jira connector. Document everything you do there (what you configured, what broke, how you fixed it) — that becomes your interview evidence.
-    </div>
+      <figcaption>The target architecture for <code>playback-config-service</code>. Reads go through the cache; telemetry writes go through the queue so a slow database never slows a player.</figcaption>
+    </figure>
   </header>
 
-  <div class="legend">
-    <span><span class="chip p0"></span>P0 — HEAVIEST WEIGHT IN JD, START HERE</span>
-    <span><span class="chip p1"></span>P1 — ROUND OUT AFTER P0</span>
-  </div>
+  <section id="project">
+    <h2>The project</h2>
+    <p><code>playback-config-service</code> serves per-title playback configuration (which streams, which features) filtered by what a given account is entitled to, and collects playback telemetry events behind a queue. It is the kind of service a streaming backend team runs, small enough to finish and real enough to have trade-offs worth writing about.</p>
+    <dl class="stack">
+      <dt>Language</dt><dd>Python 3, FastAPI, type-checked</dd>
+      <dt>Runtime</dt><dd>ECS Fargate behind an Application Load Balancer</dd>
+      <dt>Data</dt><dd>PostgreSQL on RDS, Redis on ElastiCache</dd>
+      <dt>Async</dt><dd>SQS with a worker that batches writes</dd>
+      <dt>Delivery</dt><dd>Terraform for all infrastructure, containerised builds, CI/CD pipeline</dd>
+      <dt>Operability</dt><dd>Structured logs, metrics, alarms, a short runbook</dd>
+    </dl>
+    <div class="targets">
+      <p><strong>Definition of done:</strong> a public URL, a load-test report with real request rates and latency percentiles, and a README that explains what was measured, what broke, and what changed as a result. Numbers go in this page when they exist.</p>
+    </div>
+  </section>
 
-  <div id="sections"></div>
+  <section id="timeline">
+    <h2>Six months, one test per month</h2>
+    <p>About 8 to 10 hours a week, roughly 210 hours in total. Each month has one pass/fail check so progress is visible and not just felt.</p>
+    <ol class="months">
+      <li>
+        <span class="month">Nov</span>
+        <div><span class="test">Writes a hash-map solution with no syntax lookup.</span><br>
+        <span class="focus">Python fluency, first algorithm sets, project repo and infrastructure skeleton.</span></div>
+      </li>
+      <li>
+        <span class="month">Dec</span>
+        <div><span class="test">The service returns entitlement-filtered data from PostgreSQL.</span><br>
+        <span class="focus">Data model, indexing, transactions, the first working endpoints.</span></div>
+      </li>
+      <li>
+        <span class="month">Jan</span>
+        <div><span class="test">A URL anyone can open, with load-test numbers.</span><br>
+        <span class="focus">Caching, queue and worker, deployment, load testing and tuning.</span></div>
+      </li>
+      <li>
+        <span class="month">Feb</span>
+        <div><span class="test">The API layer exists in both Python and TypeScript.</span><br>
+        <span class="focus">A bounded port of the API to Node and TypeScript (see market findings), applications begin.</span></div>
+      </li>
+      <li>
+        <span class="month">Mar</span>
+        <div><span class="test">Four or more real phone screens completed.</span><br>
+        <span class="focus">Mock interviews, system design practice, behavioural stories.</span></div>
+      </li>
+      <li>
+        <span class="month">Apr</span>
+        <div><span class="test">A signed offer.</span><br>
+        <span class="focus">Onsite loops and negotiation.</span></div>
+      </li>
+    </ol>
+  </section>
 
-  <footer>
-    <span>PROGRESS SAVES IN THIS BROWSER AUTOMATICALLY</span>
-    <span>CLICK ANY LINE TO MARK COMPLETE</span>
-  </footer>
-</div>
-
-<script>
-const SECTIONS = [
-  {
-    accent:'#00d9a3', num:'01', title:'Identity & Access Management (Okta)',
-    why:'This is the spine of the role — the JD mentions Okta, SAML, OIDC, SCIM, and joiner/mover/leaver workflows more than anything else.',
-    badges:[['p0','P0 · Priority'],['gap','Biggest gap']],
-    items:[
-      ['Set up a free Okta Developer org','Your sandbox for everything below — costs nothing, looks great in interviews.'],
-      ['Learn SAML 2.0 hands-on','Attribute mappings, claims, certificates, federation metadata — connect one app end-to-end.'],
-      ['Learn OIDC / OAuth 2.0','Know when OIDC is used vs SAML, and the basic authorization-code flow.'],
-      ['Learn SCIM provisioning','Automated user create/update/deactivate — the JD names it explicitly.'],
-      ['Joiner / Mover / Leaver workflows','How accounts get provisioned, changed, and deprovisioned across apps — auditable and automated.'],
-      ['MFA policies, groups & role assignments','Core Okta admin: who gets what, enforced how.'],
-      ['Troubleshoot a broken login end-to-end','Practice reading SAML tracer logs — this is their Tier 2/3 escalation day-to-day.'],
-    ]
-  },
-  {
-    accent:'#00d9a3', num:'02', title:'SaaS Platform Administration',
-    why:'You\'ll own Google Workspace, Slack, ChatGPT, Glean, and Zoom for ~2,000 users. You already have a running start on one of these.',
-    badges:[['p0','P0 · Priority']],
-    items:[
-      ['Glean administration','Connectors, permissions, deployment — you\'re already doing this. Write it down as you go.','head'],
-      ['Google Workspace admin console','Users, groups, organizational units, delegated admin, security settings, sharing controls.','gap'],
-      ['Slack Enterprise Grid','Org-level vs workspace-level config, permissions, retention/governance settings.','gap'],
-      ['Zoom administration','Tenant configuration, licensing, meeting/security policies.','gap'],
-      ['ChatGPT Enterprise governance','Workspace setup, seat management, admin controls.','gap'],
-      ['License utilization & renewals','Tracking seats vs usage, reclaiming licenses, renewal hygiene.'],
-    ]
-  },
-  {
-    accent:'#22d3ee', num:'03', title:'Scripting & Automation',
-    why:'"Automate repetitive administration" — Python, PowerShell, Bash or JavaScript plus REST APIs and webhooks. You\'re already on this path.',
-    badges:[['p0','P0 · Priority'],['building','You\'re building this']],
-    items:[
-      ['Python for admin tasks','Keep going — aim your LeetCode habit toward practical scripts (CSV users, API calls).','building'],
-      ['REST APIs in practice','Auth (API keys vs OAuth), pagination, rate limits, error handling — call a real SaaS API.','building'],
-      ['Webhooks & event-driven automation','How one SaaS tool triggers action in another.'],
-      ['PowerShell or Bash basics','Enough to automate user/file tasks on a schedule.'],
-      ['Build 2–3 real automations','e.g. script that provisions a user across two apps — concrete portfolio evidence.'],
-    ]
-  },
-  {
-    accent:'#22d3ee', num:'04', title:'Security, Compliance & Access Reviews',
-    why:'Least privilege, RBAC, audit evidence, and remediation — smaller surface area in the JD but expected at senior level.',
-    badges:[['p1','P1']],
-    items:[
-      ['RBAC & least-privilege design','Role-based access control — grant the minimum, nothing more.'],
-      ['Periodic access reviews','How to run a review cycle and produce evidence auditors accept.'],
-      ['Audit & compliance basics','SOC 2-style evidence collection, policy enforcement, remediation follow-through.'],
-    ]
-  },
-  {
-    accent:'#22d3ee', num:'05', title:'Operations Discipline',
-    why:'Senior = you make the system better, not just keep it alive: runbooks, root cause analysis, clear change communication.',
-    badges:[['p1','P1']],
-    items:[
-      ['Structured troubleshooting & RCA','Write root-cause analyses instead of applying workarounds.'],
-      ['Runbooks & documentation','Config standards, ownership records, support docs — the JD asks for these by name.'],
-      ['Change & outage communication','Announce planned maintenance and incidents clearly to stakeholders.'],
-    ]
-  },
-  {
-    accent:'#22d3ee', num:'06', title:'Application & Interview Positioning',
-    why:'Translate what you\'ve done into their language before you apply.',
-    badges:[['p1','P1']],
-    items:[
-      ['Document your Glean + Jira connector work','What you set up, what broke, what you fixed — this is real IT admin experience.','head'],
-      ['Rewrite your resume toward systems ownership','Emphasize process design, vendor coordination, escalations, cross-team delivery.'],
-      ['Prepare 3 STAR stories','One escalation, one automation/improvement, one vendor or stakeholder conflict.'],
-      ['Update LinkedIn & prepare application materials','The application requires a LinkedIn URL and resume — have both sharp.'],
-      ['Decide how to address the 8+ years requirement','Be honest; lead with transferable experience and the Glean admin work.'],
-    ]
-  },
-];
-
-const KEY='crunchyroll-tracker-v1';
-let state={};
-try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){state={}}
-
-const root=document.getElementById('sections');
-let total=0;
-
-SECTIONS.forEach((s,si)=>{
-  const sec=document.createElement('section');
-  const done=s.items.filter((_,ii)=>state[si+'-'+ii]).length;
-  total+=s.items.length;
-  sec.innerHTML=`
-    <div class="sec" style="--accent:${s.accent}">
-      <div class="sec-head">
-        <div class="sec-num">${s.num}</div>
-        <div class="sec-title">
-          <h2>${s.title}</h2>
-          <div class="why">${s.why}</div>
-          <div class="badges">${s.badges.map(b=>`<span class="badge ${b[0]}">${b[1]}</span>`).join('')}</div>
-        </div>
-        <div class="sec-prog">
-          <div class="bar mini"><i id="bar-${si}" style="width:${done/s.items.length*100}%"></i></div>
-          <span id="cnt-${si}">${done}/${s.items.length}</span>
-        </div>
+  <section id="skills">
+    <h2>The skills track</h2>
+    <div class="two">
+      <div>
+        <h3>Algorithms and Python</h3>
+        <p>120 problems, chosen for patterns that show up in backend interviews: hash maps, two pointers, trees and graphs, heaps, intervals, basic dynamic programming. The goal is fluency, so problems are re-solved from a blank file after a week.</p>
+        <h3>System design</h3>
+        <p>About 40 hours, shaped by the syllabus that real job postings imply (below). Each topic ends with a written design for something small enough to build, and several are built into the project.</p>
       </div>
-      <ul class="items" id="list-${si}"></ul>
-    </div>`;
-  root.appendChild(sec);
-  const ul=sec.querySelector('#list-'+si);
-  s.items.forEach((it,ii)=>{
-    const id=si+'-'+ii;
-    const li=document.createElement('li');
-    li.className='item'+(state[id]?' done':'');
-    li.innerHTML=`
-      <span class="node"></span>
-      <span class="txt"><span class="t">${it[0]}</span><div class="d">${it[1]}</div></span>
-      ${it[2]?`<span class="tag ${it[2]}">${it[2]==='head'?'head start':it[2]}</span>`:''}`;
-    li.addEventListener('click',()=>{
-      state[id]=!state[id];
-      li.classList.toggle('done',state[id]);
-      localStorage.setItem(KEY,JSON.stringify(state));
-      updateSection(si);updateOverall();
-    });
-    ul.appendChild(li);
-  });
-});
+      <div>
+        <h3>What the postings ask for</h3>
+        <ul>
+          <li>REST and GraphQL API design</li>
+          <li>SQL and NoSQL modelling, indexing, transactions</li>
+          <li>Caching, with Redis named most often</li>
+          <li>Queues and asynchronous processing</li>
+          <li>AWS in production, containers, CI/CD, infrastructure as code</li>
+          <li>Observability and on-call practice</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
-function updateSection(si){
-  const s=SECTIONS[si];
-  const done=s.items.filter((_,ii)=>state[si+'-'+ii]).length;
-  document.getElementById('bar-'+si).style.width=(done/s.items.length*100)+'%';
-  document.getElementById('cnt-'+si).textContent=done+'/'+s.items.length;
-}
-function updateOverall(){
-  let done=0;
-  SECTIONS.forEach((s,si)=>s.items.forEach((_,ii)=>{if(state[si+'-'+ii])done++}));
-  const pct=Math.round(done/total*100);
-  document.getElementById('overallPct').textContent=pct+'%';
-  document.getElementById('overallBar').style.width=pct+'%';
-  document.getElementById('overallCount').textContent=done+' / '+total+' objectives complete';
-}
-document.getElementById('resetBtn').addEventListener('click',()=>{
-  if(!confirm('Reset all progress?'))return;
-  state={};localStorage.removeItem(KEY);
-  document.querySelectorAll('li.item').forEach(li=>li.classList.remove('done'));
-  SECTIONS.forEach((_,si)=>updateSection(si));
-  updateOverall();
-});
-updateOverall();
-</script>
+  <section id="market">
+    <h2>What the market actually asks for</h2>
+    <p>The plan starts from data. A search of 54 "Software Engineer II" postings in media, gaming and entertainment, as of 31 October 2026, found:</p>
+    <ul>
+      <li><strong>Only 4 are genuine backend roles.</strong> The rest are frontend, mobile, data, QA or similar under the same title.</li>
+      <li><strong>"II" is not a consistent level.</strong> Years of experience asked ranged from "up to 2" to "5+" across the backend roles.</li>
+      <li><strong>None names Python.</strong> Three of the four name Node or TypeScript first. That is why February includes a bounded port of the API layer: the resume should match what screens look for, and the underlying skills transfer.</li>
+    </ul>
+    <h3>Posted US pay bands for SWE II in this vertical</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Company</th><th>Low</th><th>High</th></tr></thead>
+        <tbody>
+          <tr><td>PlayStation</td><td class="num">$119,000</td><td class="num">$169,000</td></tr>
+          <tr><td>Disney</td><td class="num">$118,000</td><td class="num">$160,000</td></tr>
+          <tr><td>Warner Bros. Discovery</td><td class="num">$94,000</td><td class="num">$151,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px">Source: public job postings on <a href="https://www.showbizjobs.com/search?q=Software+Engineer+II">ShowbizJobs</a>. Bands vary by location and change; check the live posting before relying on a figure.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Last updated 31 October 2026. Source and history live in the repository; this page is a snapshot. <a href="tracker.html">Progress tracker</a>.</p>
+  </div>
+</footer>
 </body>
 </html>
