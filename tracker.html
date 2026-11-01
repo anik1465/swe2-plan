@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senior IT Engineer, SaaS Applications — Prep Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050810;
+  --panel:#0c1220;
+  --panel-2:#111a2b;
+  --border:#1a2540;
+  --border-soft:#141d33;
+  --text:#e8edf7;
+  --text-dim:#8b98b4;
+  --text-faint:#5a6680;
+  --mint:#00d9a3;
+  --cyan:#22d3ee;
+  --amber:#fbbf24;
+  --red:#f87171;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Inter',-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.55;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34,211,238,.05), transparent),
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.008) 3px);
+  min-height:100vh;
+}
+::selection{background:rgba(0,217,163,.25)}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#2a3a5f}
+
+.wrap{max-width:1060px;margin:0 auto;padding:0 28px 120px}
+
+/* ---------- header ---------- */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 0;border-bottom:1px solid var(--border-soft);
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--text-faint);
+}
+.topbar .live{display:flex;align-items:center;gap:8px;color:var(--mint)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--mint);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,217,163,.4)}50%{opacity:.55;box-shadow:0 0 0 5px rgba(0,217,163,0)}}
+
+header{padding:56px 0 40px}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:16px;display:flex;align-items:center;gap:12px;
+}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--cyan)}
+h1{
+  font-size:clamp(30px,4.6vw,46px);font-weight:800;letter-spacing:-.02em;line-height:1.12;
+  max-width:720px;
+}
+h1 em{font-style:normal;color:var(--mint)}
+.meta{
+  display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:22px;
+  font-family:var(--mono);font-size:12px;color:var(--text-dim);letter-spacing:.04em;
+}
+.meta span b{color:var(--text);font-weight:600}
+.meta .pay b{color:var(--amber)}
+
+/* ---------- overall progress ---------- */
+.overall{
+  margin-top:36px;background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:22px 24px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;
+}
+.overall .label{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px}
+.overall .big{font-family:var(--mono);font-size:34px;font-weight:700;color:var(--mint);line-height:1}
+.overall .bar-wrap{flex:1;min-width:220px}
+.bar{height:8px;background:#0a1020;border:1px solid var(--border-soft);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--mint));border-radius:99px;transition:width .45s cubic-bezier(.4,0,.2,1)}
+.overall .count{font-family:var(--mono);font-size:12px;color:var(--text-dim);margin-top:8px;letter-spacing:.06em}
+.reset{
+  background:transparent;border:1px solid var(--border);color:var(--text-dim);
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  padding:9px 16px;border-radius:8px;cursor:pointer;transition:.15s;
+}
+.reset:hover{border-color:var(--red);color:var(--red)}
+
+/* ---------- strategy note ---------- */
+.note{
+  margin-top:28px;border-left:3px solid var(--amber);background:rgba(251,191,36,.05);
+  padding:16px 20px;border-radius:0 10px 10px 0;font-size:14px;color:var(--text-dim);
+}
+.note b{color:var(--amber);font-weight:600}
+
+/* ---------- priority legend ---------- */
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin:44px 0 8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+.legend span{display:flex;align-items:center;gap:7px;color:var(--text-dim)}
+.chip{width:10px;height:10px;border-radius:3px}
+.chip.p0{background:var(--mint)}.chip.p1{background:var(--cyan)}.chip.p2{background:var(--text-faint)}
+
+/* ---------- sections ---------- */
+section{margin-top:22px}
+.sec{
+  background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;transition:border-color .2s;
+}
+.sec:hover{border-color:#25355c}
+.sec-head{
+  display:flex;align-items:flex-start;gap:18px;padding:24px 26px 20px;
+  border-left:3px solid var(--accent,var(--mint));
+}
+.sec-num{
+  font-family:var(--mono);font-size:12px;font-weight:700;color:var(--accent,var(--mint));
+  border:1px solid var(--border);border-radius:8px;padding:6px 10px;flex-shrink:0;margin-top:2px;
+  background:var(--panel-2);
+}
+.sec-title{flex:1;min-width:0}
+.sec-title h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.sec-title .why{font-size:13px;color:var(--text-dim);margin-top:5px;max-width:640px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.badge{
+  font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  padding:4px 9px;border-radius:5px;border:1px solid;
+}
+.badge.p0{color:var(--mint);border-color:rgba(0,217,163,.35);background:rgba(0,217,163,.07)}
+.badge.p1{color:var(--cyan);border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.07)}
+.badge.gap{color:var(--amber);border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.07)}
+.badge.head{color:var(--mint);border-color:rgba(0,217,163,.5);background:rgba(0,217,163,.12)}
+.badge.building{color:var(--cyan);border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.12)}
+.sec-prog{
+  display:flex;align-items:center;gap:12px;flex-shrink:0;
+  font-family:var(--mono);font-size:12px;color:var(--text-dim);
+}
+.sec-prog .mini{width:76px}
+
+ul.items{list-style:none;padding:6px 14px 18px}
+li.item{
+  display:flex;align-items:flex-start;gap:14px;padding:11px 12px;border-radius:9px;
+  cursor:pointer;transition:background .12s;user-select:none;
+}
+li.item:hover{background:rgba(255,255,255,.025)}
+/* radar-node checkbox */
+.node{
+  flex-shrink:0;width:19px;height:19px;border-radius:50%;margin-top:2px;
+  border:1.5px solid #2c3c63;position:relative;transition:.18s;
+}
+li.item:hover .node{border-color:var(--cyan)}
+.node::after{
+  content:"";position:absolute;inset:4px;border-radius:50%;background:var(--mint);
+  transform:scale(0);transition:transform .2s cubic-bezier(.34,1.56,.64,1);
+}
+li.done .node{border-color:var(--mint);box-shadow:0 0 10px rgba(0,217,163,.35)}
+li.done .node::after{transform:scale(1)}
+.item .txt{flex:1}
+.item .txt .t{font-size:14.5px;font-weight:500;transition:color .15s}
+li.done .t{color:var(--text-faint);text-decoration:line-through;text-decoration-color:rgba(0,217,163,.4)}
+.item .txt .d{font-size:12.5px;color:var(--text-faint);margin-top:2px}
+.tag{
+  flex-shrink:0;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  padding:3px 7px;border-radius:4px;margin-top:3px;border:1px solid;
+}
+.tag.gap{color:var(--amber);border-color:rgba(251,191,36,.3)}
+.tag.head{color:var(--mint);border-color:rgba(0,217,163,.35)}
+.tag.building{color:var(--cyan);border-color:rgba(34,211,238,.35)}
+
+/* ---------- footer ---------- */
+footer{
+  margin-top:56px;padding-top:24px;border-top:1px solid var(--border-soft);
+  font-family:var(--mono);font-size:11px;color:var(--text-faint);letter-spacing:.08em;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+@media(max-width:640px){
+  .sec-head{flex-wrap:wrap}
+  .sec-prog{width:100%;margin-top:6px}
+  .sec-prog .mini{flex:1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span>CRUNCHYROLL · SENIOR IT ENGINEER · SAAS APPLICATIONS</span>
+    <span class="live"><span class="dot"></span>TRACKING ACTIVE</span>
+  </div>
+
+  <header>
+    <div class="eyebrow">PREP MISSION BRIEF</div>
+    <h1>What to work on for the <em>SaaS Applications Engineer</em> role</h1>
+    <div class="meta">
+      <span>LOCATION <b>Los Angeles, CA · Hybrid (Tue–Thu)</b></span>
+      <span class="pay">RANGE <b>$133,100 – $166,400</b></span>
+      <span>SCALE <b>~2,000 users</b></span>
+      <span>REPORTS TO <b>Senior Director of IT</b></span>
+    </div>
+
+    <div class="overall">
+      <div>
+        <div class="label">Overall Readiness</div>
+        <div class="big" id="overallPct">0%</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar"><i id="overallBar"></i></div>
+        <div class="count" id="overallCount">0 / 0 objectives complete</div>
+      </div>
+      <button class="reset" id="resetBtn">Reset</button>
+    </div>
+
+    <div class="note">
+      <b>Read this first:</b> the JD asks for 8+ years of progressive Corporate IT experience — that's the hardest gate and no checklist replaces it. Your strongest angle is real, recent admin work: you're already administering Glean and its Jira connector. Document everything you do there (what you configured, what broke, how you fixed it) — that becomes your interview evidence.
+    </div>
+  </header>
+
+  <div class="legend">
+    <span><span class="chip p0"></span>P0 — HEAVIEST WEIGHT IN JD, START HERE</span>
+    <span><span class="chip p1"></span>P1 — ROUND OUT AFTER P0</span>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>
+    <span>PROGRESS SAVES IN THIS BROWSER AUTOMATICALLY</span>
+    <span>CLICK ANY LINE TO MARK COMPLETE</span>
+  </footer>
+</div>
+
+<script>
+const SECTIONS = [
+  {
+    accent:'#00d9a3', num:'01', title:'Identity & Access Management (Okta)',
+    why:'This is the spine of the role — the JD mentions Okta, SAML, OIDC, SCIM, and joiner/mover/leaver workflows more than anything else.',
+    badges:[['p0','P0 · Priority'],['gap','Biggest gap']],
+    items:[
+      ['Set up a free Okta Developer org','Your sandbox for everything below — costs nothing, looks great in interviews.'],
+      ['Learn SAML 2.0 hands-on','Attribute mappings, claims, certificates, federation metadata — connect one app end-to-end.'],
+      ['Learn OIDC / OAuth 2.0','Know when OIDC is used vs SAML, and the basic authorization-code flow.'],
+      ['Learn SCIM provisioning','Automated user create/update/deactivate — the JD names it explicitly.'],
+      ['Joiner / Mover / Leaver workflows','How accounts get provisioned, changed, and deprovisioned across apps — auditable and automated.'],
+      ['MFA policies, groups & role assignments','Core Okta admin: who gets what, enforced how.'],
+      ['Troubleshoot a broken login end-to-end','Practice reading SAML tracer logs — this is their Tier 2/3 escalation day-to-day.'],
+    ]
+  },
+  {
+    accent:'#00d9a3', num:'02', title:'SaaS Platform Administration',
+    why:'You\'ll own Google Workspace, Slack, ChatGPT, Glean, and Zoom for ~2,000 users. You already have a running start on one of these.',
+    badges:[['p0','P0 · Priority']],
+    items:[
+      ['Glean administration','Connectors, permissions, deployment — you\'re already doing this. Write it down as you go.','head'],
+      ['Google Workspace admin console','Users, groups, organizational units, delegated admin, security settings, sharing controls.','gap'],
+      ['Slack Enterprise Grid','Org-level vs workspace-level config, permissions, retention/governance settings.','gap'],
+      ['Zoom administration','Tenant configuration, licensing, meeting/security policies.','gap'],
+      ['ChatGPT Enterprise governance','Workspace setup, seat management, admin controls.','gap'],
+      ['License utilization & renewals','Tracking seats vs usage, reclaiming licenses, renewal hygiene.'],
+    ]
+  },
+  {
+    accent:'#22d3ee', num:'03', title:'Scripting & Automation',
+    why:'"Automate repetitive administration" — Python, PowerShell, Bash or JavaScript plus REST APIs and webhooks. You\'re already on this path.',
+    badges:[['p0','P0 · Priority'],['building','You\'re building this']],
+    items:[
+      ['Python for admin tasks','Keep going — aim your LeetCode habit toward practical scripts (CSV users, API calls).','building'],
+      ['REST APIs in practice','Auth (API keys vs OAuth), pagination, rate limits, error handling — call a real SaaS API.','building'],
+      ['Webhooks & event-driven automation','How one SaaS tool triggers action in another.'],
+      ['PowerShell or Bash basics','Enough to automate user/file tasks on a schedule.'],
+      ['Build 2–3 real automations','e.g. script that provisions a user across two apps — concrete portfolio evidence.'],
+    ]
+  },
+  {
+    accent:'#22d3ee', num:'04', title:'Security, Compliance & Access Reviews',
+    why:'Least privilege, RBAC, audit evidence, and remediation — smaller surface area in the JD but expected at senior level.',
+    badges:[['p1','P1']],
+    items:[
+      ['RBAC & least-privilege design','Role-based access control — grant the minimum, nothing more.'],
+      ['Periodic access reviews','How to run a review cycle and produce evidence auditors accept.'],
+      ['Audit & compliance basics','SOC 2-style evidence collection, policy enforcement, remediation follow-through.'],
+    ]
+  },
+  {
+    accent:'#22d3ee', num:'05', title:'Operations Discipline',
+    why:'Senior = you make the system better, not just keep it alive: runbooks, root cause analysis, clear change communication.',
+    badges:[['p1','P1']],
+    items:[
+      ['Structured troubleshooting & RCA','Write root-cause analyses instead of applying workarounds.'],
+      ['Runbooks & documentation','Config standards, ownership records, support docs — the JD asks for these by name.'],
+      ['Change & outage communication','Announce planned maintenance and incidents clearly to stakeholders.'],
+    ]
+  },
+  {
+    accent:'#22d3ee', num:'06', title:'Application & Interview Positioning',
+    why:'Translate what you\'ve done into their language before you apply.',
+    badges:[['p1','P1']],
+    items:[
+      ['Document your Glean + Jira connector work','What you set up, what broke, what you fixed — this is real IT admin experience.','head'],
+      ['Rewrite your resume toward systems ownership','Emphasize process design, vendor coordination, escalations, cross-team delivery.'],
+      ['Prepare 3 STAR stories','One escalation, one automation/improvement, one vendor or stakeholder conflict.'],
+      ['Update LinkedIn & prepare application materials','The application requires a LinkedIn URL and resume — have both sharp.'],
+      ['Decide how to address the 8+ years requirement','Be honest; lead with transferable experience and the Glean admin work.'],
+    ]
+  },
+];
+
+const KEY='crunchyroll-tracker-v1';
+let state={};
+try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){state={}}
+
+const root=document.getElementById('sections');
+let total=0;
+
+SECTIONS.forEach((s,si)=>{
+  const sec=document.createElement('section');
+  const done=s.items.filter((_,ii)=>state[si+'-'+ii]).length;
+  total+=s.items.length;
+  sec.innerHTML=`
+    <div class="sec" style="--accent:${s.accent}">
+      <div class="sec-head">
+        <div class="sec-num">${s.num}</div>
+        <div class="sec-title">
+          <h2>${s.title}</h2>
+          <div class="why">${s.why}</div>
+          <div class="badges">${s.badges.map(b=>`<span class="badge ${b[0]}">${b[1]}</span>`).join('')}</div>
+        </div>
+        <div class="sec-prog">
+          <div class="bar mini"><i id="bar-${si}" style="width:${done/s.items.length*100}%"></i></div>
+          <span id="cnt-${si}">${done}/${s.items.length}</span>
+        </div>
+      </div>
+      <ul class="items" id="list-${si}"></ul>
+    </div>`;
+  root.appendChild(sec);
+  const ul=sec.querySelector('#list-'+si);
+  s.items.forEach((it,ii)=>{
+    const id=si+'-'+ii;
+    const li=document.createElement('li');
+    li.className='item'+(state[id]?' done':'');
+    li.innerHTML=`
+      <span class="node"></span>
+      <span class="txt"><span class="t">${it[0]}</span><div class="d">${it[1]}</div></span>
+      ${it[2]?`<span class="tag ${it[2]}">${it[2]==='head'?'head start':it[2]}</span>`:''}`;
+    li.addEventListener('click',()=>{
+      state[id]=!state[id];
+      li.classList.toggle('done',state[id]);
+      localStorage.setItem(KEY,JSON.stringify(state));
+      updateSection(si);updateOverall();
+    });
+    ul.appendChild(li);
+  });
+});
+
+function updateSection(si){
+  const s=SECTIONS[si];
+  const done=s.items.filter((_,ii)=>state[si+'-'+ii]).length;
+  document.getElementById('bar-'+si).style.width=(done/s.items.length*100)+'%';
+  document.getElementById('cnt-'+si).textContent=done+'/'+s.items.length;
+}
+function updateOverall(){
+  let done=0;
+  SECTIONS.forEach((s,si)=>s.items.forEach((_,ii)=>{if(state[si+'-'+ii])done++}));
+  const pct=Math.round(done/total*100);
+  document.getElementById('overallPct').textContent=pct+'%';
+  document.getElementById('overallBar').style.width=pct+'%';
+  document.getElementById('overallCount').textContent=done+' / '+total+' objectives complete';
+}
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  if(!confirm('Reset all progress?'))return;
+  state={};localStorage.removeItem(KEY);
+  document.querySelectorAll('li.item').forEach(li=>li.classList.remove('done'));
+  SECTIONS.forEach((_,si)=>updateSection(si));
+  updateOverall();
+});
+updateOverall();
+</script>
+</body>
+</html>
