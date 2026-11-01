@@ -1,380 +1,743 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Senior IT Engineer, SaaS Applications — Prep Tracker</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Offer by April</title>
+<style>body{margin:0}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
+/* Layout: sticky control bar over a single 1080px column; dashboard is a ring + month rail + counters, board is three tracks, checklist is month sections. */
 :root{
-  --bg:#050810;
-  --panel:#0c1220;
-  --panel-2:#111a2b;
-  --border:#1a2540;
-  --border-soft:#141d33;
-  --text:#e8edf7;
-  --text-dim:#8b98b4;
-  --text-faint:#5a6680;
-  --mint:#00d9a3;
-  --cyan:#22d3ee;
-  --amber:#fbbf24;
-  --red:#f87171;
-  --mono:'JetBrains Mono',monospace;
-  --sans:'Inter',-apple-system,sans-serif;
+  --bg:#f3f6f6; --surface:#ffffff; --surface-2:#eaefef; --line:#d7e0df; --line-soft:#e6ecec;
+  --fg:#111b1a; --muted:#5b6b69; --faint:#8a9a98;
+  --accent:#0d7a84; --accent-ink:#ffffff; --accent-soft:#dff0f1;
+  --ok:#2c7a4f; --ok-soft:#dbefe3; --warn:#9a6411; --warn-soft:#f6ead2; --crit:#ae3b36;
+  --display:'Archivo',system-ui,sans-serif; --body:'IBM Plex Sans',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --r:10px;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--sans);
-  font-size:15px;
-  line-height:1.55;
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34,211,238,.05), transparent),
-    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.008) 3px);
-  min-height:100vh;
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d1413; --surface:#151e1d; --surface-2:#1b2625; --line:#2a3634; --line-soft:#212c2b;
+  --fg:#e7eeed; --muted:#9aaaa8; --faint:#728280;
+  --accent:#49c2c9; --accent-ink:#06211f; --accent-soft:#17312f;
+  --ok:#5fc389; --ok-soft:#162d23; --warn:#d6a44a; --warn-soft:#2d2518; --crit:#e2706a;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0d1413; --surface:#151e1d; --surface-2:#1b2625; --line:#2a3634; --line-soft:#212c2b;
+  --fg:#e7eeed; --muted:#9aaaa8; --faint:#728280;
+  --accent:#49c2c9; --accent-ink:#06211f; --accent-soft:#17312f;
+  --ok:#5fc389; --ok-soft:#162d23; --warn:#d6a44a; --warn-soft:#2d2518; --crit:#e2706a;
+  color-scheme:dark;
 }
-::selection{background:rgba(0,217,163,.25)}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:#2a3a5f}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--surface)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
-.wrap{max-width:1060px;margin:0 auto;padding:0 28px 120px}
+/* top bar */
+header.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:19;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-block:12px}
+.brand{display:flex;flex-direction:column;gap:1px;margin-right:auto;min-width:0}
+.brand h1{font-size:19px;font-weight:700}
+.brand .sub{font-size:12px;color:var(--muted);font-family:var(--mono)}
+.tabs{display:flex;gap:2px;background:var(--surface-2);padding:3px;border-radius:999px}
+.tabs button{padding:6px 14px;border-radius:999px;font-size:13px;font-weight:500;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.sync{font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap}
+.sync[data-s="saving"]{color:var(--warn)}
+.sync[data-s="off"]{color:var(--crit)}
 
-/* ---------- header ---------- */
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px 0;border-bottom:1px solid var(--border-soft);
-  font-family:var(--mono);font-size:11px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--text-faint);
-}
-.topbar .live{display:flex;align-items:center;gap:8px;color:var(--mint)}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--mint);animation:pulse 1.6s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,217,163,.4)}50%{opacity:.55;box-shadow:0 0 0 5px rgba(0,217,163,0)}}
+main{padding-block:22px 64px}
+section[hidden]{display:none!important}
 
-header{padding:56px 0 40px}
-.eyebrow{
-  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--cyan);margin-bottom:16px;display:flex;align-items:center;gap:12px;
-}
-.eyebrow::before{content:"";width:28px;height:1px;background:var(--cyan)}
-h1{
-  font-size:clamp(30px,4.6vw,46px);font-weight:800;letter-spacing:-.02em;line-height:1.12;
-  max-width:720px;
-}
-h1 em{font-style:normal;color:var(--mint)}
-.meta{
-  display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:22px;
-  font-family:var(--mono);font-size:12px;color:var(--text-dim);letter-spacing:.04em;
-}
-.meta span b{color:var(--text);font-weight:600}
-.meta .pay b{color:var(--amber)}
+/* dashboard */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.ring{width:124px;height:124px;flex:none}
+.ring text{font-family:var(--mono);fill:var(--fg)}
+.hero-copy{min-width:0;display:flex;flex-direction:column;gap:10px}
+.hero-copy h2{font-size:17px;font-weight:600}
+.hero-copy p{font-size:14px;color:var(--muted);max-width:60ch}
+.facts{display:flex;flex-wrap:wrap;gap:8px}
+.fact{background:var(--surface-2);border-radius:8px;padding:7px 11px;font-size:12px;color:var(--muted)}
+.fact b{font-family:var(--mono);font-size:15px;color:var(--fg);font-weight:600;display:block;line-height:1.3}
 
-/* ---------- overall progress ---------- */
-.overall{
-  margin-top:36px;background:var(--panel);border:1px solid var(--border);
-  border-radius:12px;padding:22px 24px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;
-}
-.overall .label{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px}
-.overall .big{font-family:var(--mono);font-size:34px;font-weight:700;color:var(--mint);line-height:1}
-.overall .bar-wrap{flex:1;min-width:220px}
-.bar{height:8px;background:#0a1020;border:1px solid var(--border-soft);border-radius:99px;overflow:hidden}
-.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--mint));border-radius:99px;transition:width .45s cubic-bezier(.4,0,.2,1)}
-.overall .count{font-family:var(--mono);font-size:12px;color:var(--text-dim);margin-top:8px;letter-spacing:.06em}
-.reset{
-  background:transparent;border:1px solid var(--border);color:var(--text-dim);
-  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-  padding:9px 16px;border-radius:8px;cursor:pointer;transition:.15s;
-}
-.reset:hover{border-color:var(--red);color:var(--red)}
+h3.sec{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:30px 0 12px}
+.months{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.mcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:9px}
+.mcard.now{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.mhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.mhead h4{font-family:var(--display);font-size:15px;font-weight:600;margin:0}
+.mhead .pct{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.theme{font-size:13px;color:var(--muted)}
+.bar-track{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.bar-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.test{font-size:12.5px;border-top:1px dashed var(--line);padding-top:8px;color:var(--fg)}
+.test span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:3px}
 
-/* ---------- strategy note ---------- */
-.note{
-  margin-top:28px;border-left:3px solid var(--amber);background:rgba(251,191,36,.05);
-  padding:16px 20px;border-radius:0 10px 10px 0;font-size:14px;color:var(--text-dim);
-}
-.note b{color:var(--amber);font-weight:600}
+.counters{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.ctr{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:9px}
+.ctr .top{display:flex;align-items:baseline;gap:8px}
+.ctr .n{font-family:var(--mono);font-size:30px;font-weight:600;line-height:1}
+.ctr .of{font-family:var(--mono);font-size:13px;color:var(--faint)}
+.ctr h4{font-family:var(--display);font-size:14px;font-weight:600;margin:0}
+.ctr .hint{font-size:12px;color:var(--muted)}
+.steps{display:flex;gap:6px;margin-top:2px}
+.steps button{border:1px solid var(--line);border-radius:7px;padding:3px 10px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.steps button:hover{border-color:var(--accent);color:var(--accent)}
+.steps input{width:62px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--fg);padding:3px 7px;font-family:var(--mono);font-size:13px;text-align:center}
 
-/* ---------- priority legend ---------- */
-.legend{display:flex;gap:18px;flex-wrap:wrap;margin:44px 0 8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em}
-.legend span{display:flex;align-items:center;gap:7px;color:var(--text-dim)}
-.chip{width:10px;height:10px;border-radius:3px}
-.chip.p0{background:var(--mint)}.chip.p1{background:var(--cyan)}.chip.p2{background:var(--text-faint)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.panel h4{font-family:var(--display);font-size:14px;font-weight:600;margin:0 0 10px}
+table.week{width:100%;border-collapse:collapse;font-size:13px}
+table.week td{padding:7px 0;border-top:1px solid var(--line-soft);vertical-align:top}
+table.week tr:first-child td{border-top:none}
+table.week td:first-child{color:var(--muted);white-space:nowrap;padding-right:12px;font-family:var(--mono);font-size:12px}
+ol.rules{margin:0;padding-left:18px;font-size:13px;color:var(--fg)}
+ol.rules li{margin-bottom:6px}
+ol.rules li:last-child{margin-bottom:0;color:var(--crit);font-weight:500}
+.nonneg{display:flex;flex-direction:column;gap:8px;font-size:13px}
+.nonneg div{display:flex;gap:9px}
+.nonneg b{font-family:var(--mono);color:var(--accent);font-weight:600}
 
-/* ---------- sections ---------- */
-section{margin-top:22px}
-.sec{
-  background:var(--panel);border:1px solid var(--border);border-radius:14px;
-  overflow:hidden;transition:border-color .2s;
-}
-.sec:hover{border-color:#25355c}
-.sec-head{
-  display:flex;align-items:flex-start;gap:18px;padding:24px 26px 20px;
-  border-left:3px solid var(--accent,var(--mint));
-}
-.sec-num{
-  font-family:var(--mono);font-size:12px;font-weight:700;color:var(--accent,var(--mint));
-  border:1px solid var(--border);border-radius:8px;padding:6px 10px;flex-shrink:0;margin-top:2px;
-  background:var(--panel-2);
-}
-.sec-title{flex:1;min-width:0}
-.sec-title h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
-.sec-title .why{font-size:13px;color:var(--text-dim);margin-top:5px;max-width:640px}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.badge{
-  font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  padding:4px 9px;border-radius:5px;border:1px solid;
-}
-.badge.p0{color:var(--mint);border-color:rgba(0,217,163,.35);background:rgba(0,217,163,.07)}
-.badge.p1{color:var(--cyan);border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.07)}
-.badge.gap{color:var(--amber);border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.07)}
-.badge.head{color:var(--mint);border-color:rgba(0,217,163,.5);background:rgba(0,217,163,.12)}
-.badge.building{color:var(--cyan);border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.12)}
-.sec-prog{
-  display:flex;align-items:center;gap:12px;flex-shrink:0;
-  font-family:var(--mono);font-size:12px;color:var(--text-dim);
-}
-.sec-prog .mini{width:76px}
+/* board */
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.filters button{border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:12.5px;color:var(--muted);background:var(--surface)}
+.filters button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start}
+.col{background:var(--surface-2);border-radius:var(--r);padding:10px;min-width:0}
+.col.over{outline:2px dashed var(--accent);outline-offset:-2px}
+.col h4{font-family:var(--display);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:2px 4px 10px;display:flex;justify-content:space-between}
+.col-list{display:flex;flex-direction:column;gap:8px;min-height:40px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:10px 11px;display:flex;flex-direction:column;gap:7px;cursor:grab}
+.card.dragging{opacity:.45}
+.card .t{font-size:13.5px;line-height:1.35;min-width:0;overflow-wrap:anywhere}
+.card .meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.card .move{display:flex;gap:4px;margin-left:auto}
+.card .move button{border:1px solid var(--line);border-radius:6px;width:24px;height:22px;font-size:12px;color:var(--muted);line-height:1}
+.card .move button:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.card .move button:disabled{opacity:.3;cursor:default}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:5px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.chip.key{background:var(--warn-soft);color:var(--warn);font-weight:600}
+.chip.due{background:none;padding:2px 0;color:var(--faint)}
+.chip.past{color:var(--crit)}
+.empty{font-size:12px;color:var(--faint);padding:10px 4px;font-style:italic}
 
-ul.items{list-style:none;padding:6px 14px 18px}
-li.item{
-  display:flex;align-items:flex-start;gap:14px;padding:11px 12px;border-radius:9px;
-  cursor:pointer;transition:background .12s;user-select:none;
-}
-li.item:hover{background:rgba(255,255,255,.025)}
-/* radar-node checkbox */
-.node{
-  flex-shrink:0;width:19px;height:19px;border-radius:50%;margin-top:2px;
-  border:1.5px solid #2c3c63;position:relative;transition:.18s;
-}
-li.item:hover .node{border-color:var(--cyan)}
-.node::after{
-  content:"";position:absolute;inset:4px;border-radius:50%;background:var(--mint);
-  transform:scale(0);transition:transform .2s cubic-bezier(.34,1.56,.64,1);
-}
-li.done .node{border-color:var(--mint);box-shadow:0 0 10px rgba(0,217,163,.35)}
-li.done .node::after{transform:scale(1)}
-.item .txt{flex:1}
-.item .txt .t{font-size:14.5px;font-weight:500;transition:color .15s}
-li.done .t{color:var(--text-faint);text-decoration:line-through;text-decoration-color:rgba(0,217,163,.4)}
-.item .txt .d{font-size:12.5px;color:var(--text-faint);margin-top:2px}
-.tag{
-  flex-shrink:0;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
-  padding:3px 7px;border-radius:4px;margin-top:3px;border:1px solid;
-}
-.tag.gap{color:var(--amber);border-color:rgba(251,191,36,.3)}
-.tag.head{color:var(--mint);border-color:rgba(0,217,163,.35)}
-.tag.building{color:var(--cyan);border-color:rgba(34,211,238,.35)}
+/* checklist */
+.msec{margin-bottom:26px}
+.msec > h4{font-family:var(--display);font-size:16px;font-weight:600;margin:0 0 2px;display:flex;align-items:baseline;gap:10px}
+.msec > h4 .pct{font-family:var(--mono);font-size:12px;color:var(--faint);font-weight:400}
+.msec > .theme{margin-bottom:10px}
+.rows{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.row{border-top:1px solid var(--line-soft);padding:11px 13px;display:grid;grid-template-columns:auto 1fr;gap:11px}
+.row:first-child{border-top:none}
+.row.done .rtitle{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--faint)}
+.row.doing{background:var(--accent-soft)}
+.cb{appearance:none;width:18px;height:18px;border:1.5px solid var(--line);border-radius:5px;margin-top:2px;cursor:pointer;position:relative;flex:none;background:var(--bg)}
+.cb:checked{background:var(--ok);border-color:var(--ok)}
+.cb:checked::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
+.cb:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.rbody{min-width:0;display:flex;flex-direction:column;gap:5px}
+.rtitle{font-size:14px;font-weight:500;overflow-wrap:anywhere}
+.rdetail{font-size:13px;color:var(--muted)}
+.rmeta{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.rmeta .link{font-size:12px;color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+textarea.note{width:100%;min-height:62px;resize:vertical;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);padding:8px 10px;font:inherit;font-size:13px}
+.notelabel{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.hasnote{color:var(--accent)}
 
-/* ---------- footer ---------- */
-footer{
-  margin-top:56px;padding-top:24px;border-top:1px solid var(--border-soft);
-  font-family:var(--mono);font-size:11px;color:var(--text-faint);letter-spacing:.08em;
-  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+/* problems */
+.psum{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:22px}
+.psum-stats{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.psum-stats > div:not(.bar-track){display:flex;align-items:baseline;gap:7px}
+.psum-stats b{font-size:26px;font-weight:600}
+.psum-stats span{font-size:12.5px;color:var(--muted)}
+.psum-note{font-size:12.5px;color:var(--muted);margin-top:11px;max-width:70ch}
+.pgroup{margin-bottom:12px}
+.plabel{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:0 0 6px 2px}
+.prow{display:flex;align-items:center;gap:11px;padding:8px 13px;border-top:1px solid var(--line-soft);cursor:pointer}
+.prow:first-child{border-top:none}
+.prow:hover:not(.cold):not(.solved){background:var(--surface-2)}
+.prow.solved .ptitle{color:var(--muted)}
+.prow.cold{background:var(--ok-soft)}
+.pstate{flex:none;width:26px;height:26px;border:2px solid var(--faint);border-radius:7px;background:var(--bg);
+  font-family:var(--mono);font-size:10px;font-weight:600;line-height:1;letter-spacing:-.5px;color:var(--muted);
+  display:flex;align-items:center;justify-content:center}
+.prow.solved .pstate{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-size:13px}
+.prow.cold .pstate{background:var(--ok);border-color:var(--ok);color:#fff}
+.ptitle{font-size:13.5px;color:var(--fg);text-decoration:none;min-width:0;overflow-wrap:anywhere;flex:1}
+.ptitle:hover{text-decoration:underline;text-underline-offset:2px;color:var(--accent)}
+.prow:hover .pstate{border-color:var(--accent)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--muted);align-items:center}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:22px;height:22px;border-radius:6px;border:2px solid var(--faint);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:600;font-style:normal;letter-spacing:-.5px}
+.legend i.s{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-size:13px}
+.legend i.c{background:var(--ok);border-color:var(--ok);color:#fff}
+.chip.diff{margin-left:auto;font-weight:600}
+.chip.dE{color:var(--ok)} .chip.dM{color:var(--warn)} .chip.dH{color:var(--crit)}
+
+.backup{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.backup button{border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:12.5px;color:var(--fg);background:var(--surface)}
+.backup button:hover{border-color:var(--accent);color:var(--accent)}
+.banner{background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:9px 12px;font-size:12.5px;margin-bottom:16px}
+footer{color:var(--faint);font-size:12px;margin-top:34px;border-top:1px solid var(--line);padding-top:14px}
+
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr;justify-items:start}
+  .two{grid-template-columns:1fr}
+  .cols{grid-template-columns:1fr}
+  .brand{width:100%}
+  .tabs{flex:1}
+  .tabs button{flex:1;text-align:center}
 }
-@media(max-width:640px){
-  .sec-head{flex-wrap:wrap}
-  .sec-prog{width:100%;margin-top:6px}
-  .sec-prog .mini{flex:1}
-}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+
 </head>
 <body>
-<div class="wrap">
-
-  <div class="topbar">
-    <span>CRUNCHYROLL · SENIOR IT ENGINEER · SAAS APPLICATIONS</span>
-    <span class="live"><span class="dot"></span>TRACKING ACTIVE</span>
+<header class="bar">
+  <div class="wrap">
+    <div class="brand">
+      <h1>Offer by April</h1>
+      <div class="sub" id="sub">SWE II backend · Nov 2026 – Apr 2027</div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-view="dash" aria-selected="true">Dashboard</button>
+      <button role="tab" data-view="board" aria-selected="false">Board</button>
+      <button role="tab" data-view="list" aria-selected="false">Checklist</button>
+      <button role="tab" data-view="prob" aria-selected="false">Problems</button>
+    </div>
+    <div class="sync" id="sync" data-s="ok">saved on this device</div>
   </div>
+</header>
 
-  <header>
-    <div class="eyebrow">PREP MISSION BRIEF</div>
-    <h1>What to work on for the <em>SaaS Applications Engineer</em> role</h1>
-    <div class="meta">
-      <span>LOCATION <b>Los Angeles, CA · Hybrid (Tue–Thu)</b></span>
-      <span class="pay">RANGE <b>$133,100 – $166,400</b></span>
-      <span>SCALE <b>~2,000 users</b></span>
-      <span>REPORTS TO <b>Senior Director of IT</b></span>
-    </div>
+<main class="wrap">
+  <div class="banner" id="banner" hidden></div>
 
-    <div class="overall">
-      <div>
-        <div class="label">Overall Readiness</div>
-        <div class="big" id="overallPct">0%</div>
+  <section id="view-dash">
+    <div class="hero">
+      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="var(--surface-2)" stroke-width="12"/>
+        <circle id="ringfill" cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="12"
+                stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"
+                transform="rotate(-90 60 60)"/>
+        <text id="ringpct" x="60" y="59" text-anchor="middle" font-size="26" font-weight="600">0%</text>
+        <text id="ringsub" x="60" y="76" text-anchor="middle" font-size="10" fill="var(--muted)">0 of 0</text>
+      </svg>
+      <div class="hero-copy">
+        <h2 id="heroline">The plan in one sentence</h2>
+        <p>By 30 April 2027 you hold at least one Software Engineer II backend offer. Two tracks: skills, which you control and which carries the schedule, and access, which depends on other people replying and so starts in November.</p>
+        <div class="facts" id="facts"></div>
       </div>
-      <div class="bar-wrap">
-        <div class="bar"><i id="overallBar"></i></div>
-        <div class="count" id="overallCount">0 / 0 objectives complete</div>
+    </div>
+
+    <h3 class="sec">Six months, one test each</h3>
+    <div class="months" id="months"></div>
+
+    <h3 class="sec">Running totals</h3>
+    <div class="counters" id="counters"></div>
+
+    <h3 class="sec">The week, and the rule for bad weeks</h3>
+    <div class="two">
+      <div class="panel">
+        <h4>Nine hours, same nine every week</h4>
+        <table class="week">
+          <tr><td>Mon–Thu, pre-work</td><td>45 min × 4 — one algorithm problem, start to finish</td></tr>
+          <tr><td>Saturday a.m.</td><td>3 hrs — portfolio project, one meaningful commit</td></tr>
+          <tr><td>Sunday</td><td>2 hrs — system design, then mocks from February</td></tr>
+          <tr><td>Floating evening</td><td>1 hr — access track: messages, applications, reqs</td></tr>
+        </table>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:10px">A tenth hour goes to Saturday's project block, not to more problems.</p>
       </div>
-      <button class="reset" id="resetBtn">Reset</button>
+      <div class="panel">
+        <h4>Cut in this order</h4>
+        <ol class="rules">
+          <li>Access track — one missed week of outreach costs almost nothing.</li>
+          <li>Sunday's design block — design knowledge holds for a week.</li>
+          <li>Saturday's project block — painful, but it has slack.</li>
+          <li>Never the morning problem. Four 45-minute sessions is the floor.</li>
+        </ol>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:10px">A three-hour week is a legitimate week. Write it down and start the next one at full size.</p>
+      </div>
     </div>
 
-    <div class="note">
-      <b>Read this first:</b> the JD asks for 8+ years of progressive Corporate IT experience — that's the hardest gate and no checklist replaces it. Your strongest angle is real, recent admin work: you're already administering Glean and its Jira connector. Document everything you do there (what you configured, what broke, how you fixed it) — that becomes your interview evidence.
+    <h3 class="sec">The three non-negotiables</h3>
+    <div class="panel">
+      <div class="nonneg">
+        <div><b>01</b><span>One deployed service with real numbers — a URL, load-test figures, a README that reads like a design doc.</span></div>
+        <div><b>02</b><span>120 problems solved, not watched. Solved means you wrote it, it passed, and you could do it again cold a month later.</span></div>
+        <div><b>03</b><span>Thirty mock interviews out loud, with a human or at minimum a recording.</span></div>
+      </div>
     </div>
-  </header>
+  </section>
 
-  <div class="legend">
-    <span><span class="chip p0"></span>P0 — HEAVIEST WEIGHT IN JD, START HERE</span>
-    <span><span class="chip p1"></span>P1 — ROUND OUT AFTER P0</span>
-  </div>
+  <section id="view-board" hidden>
+    <div class="filters" id="filters"></div>
+    <div class="cols" id="cols"></div>
+  </section>
 
-  <div id="sections"></div>
+  <section id="view-list" hidden>
+    <div id="listbody"></div>
+  </section>
+
+  <section id="view-prob" hidden>
+    <div class="psum" id="psum"></div>
+    <div id="probbody"></div>
+  </section>
 
   <footer>
-    <span>PROGRESS SAVES IN THIS BROWSER AUTOMATICALLY</span>
-    <span>CLICK ANY LINE TO MARK COMPLETE</span>
+    <p><a href="./">Back to the plan</a>. Progress is saved in this browser, on this device. To move it to another phone or laptop, export it here and import it there.</p>
+    <div class="backup">
+      <button id="btn-export" type="button">Export progress</button>
+      <button id="btn-import" type="button">Import progress</button>
+      <input id="file-import" type="file" accept="application/json,.json" hidden>
+    </div>
   </footer>
-</div>
+</main>
 
 <script>
-const SECTIONS = [
-  {
-    accent:'#00d9a3', num:'01', title:'Identity & Access Management (Okta)',
-    why:'This is the spine of the role — the JD mentions Okta, SAML, OIDC, SCIM, and joiner/mover/leaver workflows more than anything else.',
-    badges:[['p0','P0 · Priority'],['gap','Biggest gap']],
-    items:[
-      ['Set up a free Okta Developer org','Your sandbox for everything below — costs nothing, looks great in interviews.'],
-      ['Learn SAML 2.0 hands-on','Attribute mappings, claims, certificates, federation metadata — connect one app end-to-end.'],
-      ['Learn OIDC / OAuth 2.0','Know when OIDC is used vs SAML, and the basic authorization-code flow.'],
-      ['Learn SCIM provisioning','Automated user create/update/deactivate — the JD names it explicitly.'],
-      ['Joiner / Mover / Leaver workflows','How accounts get provisioned, changed, and deprovisioned across apps — auditable and automated.'],
-      ['MFA policies, groups & role assignments','Core Okta admin: who gets what, enforced how.'],
-      ['Troubleshoot a broken login end-to-end','Practice reading SAML tracer logs — this is their Tier 2/3 escalation day-to-day.'],
-    ]
-  },
-  {
-    accent:'#00d9a3', num:'02', title:'SaaS Platform Administration',
-    why:'You\'ll own Google Workspace, Slack, ChatGPT, Glean, and Zoom for ~2,000 users. You already have a running start on one of these.',
-    badges:[['p0','P0 · Priority']],
-    items:[
-      ['Glean administration','Connectors, permissions, deployment — you\'re already doing this. Write it down as you go.','head'],
-      ['Google Workspace admin console','Users, groups, organizational units, delegated admin, security settings, sharing controls.','gap'],
-      ['Slack Enterprise Grid','Org-level vs workspace-level config, permissions, retention/governance settings.','gap'],
-      ['Zoom administration','Tenant configuration, licensing, meeting/security policies.','gap'],
-      ['ChatGPT Enterprise governance','Workspace setup, seat management, admin controls.','gap'],
-      ['License utilization & renewals','Tracking seats vs usage, reclaiming licenses, renewal hygiene.'],
-    ]
-  },
-  {
-    accent:'#22d3ee', num:'03', title:'Scripting & Automation',
-    why:'"Automate repetitive administration" — Python, PowerShell, Bash or JavaScript plus REST APIs and webhooks. You\'re already on this path.',
-    badges:[['p0','P0 · Priority'],['building','You\'re building this']],
-    items:[
-      ['Python for admin tasks','Keep going — aim your LeetCode habit toward practical scripts (CSV users, API calls).','building'],
-      ['REST APIs in practice','Auth (API keys vs OAuth), pagination, rate limits, error handling — call a real SaaS API.','building'],
-      ['Webhooks & event-driven automation','How one SaaS tool triggers action in another.'],
-      ['PowerShell or Bash basics','Enough to automate user/file tasks on a schedule.'],
-      ['Build 2–3 real automations','e.g. script that provisions a user across two apps — concrete portfolio evidence.'],
-    ]
-  },
-  {
-    accent:'#22d3ee', num:'04', title:'Security, Compliance & Access Reviews',
-    why:'Least privilege, RBAC, audit evidence, and remediation — smaller surface area in the JD but expected at senior level.',
-    badges:[['p1','P1']],
-    items:[
-      ['RBAC & least-privilege design','Role-based access control — grant the minimum, nothing more.'],
-      ['Periodic access reviews','How to run a review cycle and produce evidence auditors accept.'],
-      ['Audit & compliance basics','SOC 2-style evidence collection, policy enforcement, remediation follow-through.'],
-    ]
-  },
-  {
-    accent:'#22d3ee', num:'05', title:'Operations Discipline',
-    why:'Senior = you make the system better, not just keep it alive: runbooks, root cause analysis, clear change communication.',
-    badges:[['p1','P1']],
-    items:[
-      ['Structured troubleshooting & RCA','Write root-cause analyses instead of applying workarounds.'],
-      ['Runbooks & documentation','Config standards, ownership records, support docs — the JD asks for these by name.'],
-      ['Change & outage communication','Announce planned maintenance and incidents clearly to stakeholders.'],
-    ]
-  },
-  {
-    accent:'#22d3ee', num:'06', title:'Application & Interview Positioning',
-    why:'Translate what you\'ve done into their language before you apply.',
-    badges:[['p1','P1']],
-    items:[
-      ['Document your Glean + Jira connector work','What you set up, what broke, what you fixed — this is real IT admin experience.','head'],
-      ['Rewrite your resume toward systems ownership','Emphasize process design, vendor coordination, escalations, cross-team delivery.'],
-      ['Prepare 3 STAR stories','One escalation, one automation/improvement, one vendor or stakeholder conflict.'],
-      ['Update LinkedIn & prepare application materials','The application requires a LinkedIn URL and resume — have both sharp.'],
-      ['Decide how to address the 8+ years requirement','Be honest; lead with transferable experience and the Glean admin work.'],
-    ]
-  },
+const MONTHS=[
+ {k:"nov",label:"November 2026",theme:"Rebuild the hands",test:"You can write a hash-map-and-list solution with no syntax lookup",miss:"Repeat November — everything downstream assumes it.",start:"2026-11-01",end:"2026-11-30"},
+ {k:"dec",label:"December 2026",theme:"Volume, and the service gets real",test:"The service returns entitlement-filtered data from PostgreSQL",miss:"Set December's problem target to zero and finish the data layer in week one of January.",start:"2026-12-01",end:"2026-12-31"},
+ {k:"jan",label:"January 2027",theme:"Production, and design begins",test:"There is a URL you can send someone, with load-test numbers beside it",miss:"Drop the TypeScript port from February and finish the deploy instead.",start:"2027-01-01",end:"2027-01-31"},
+ {k:"feb",label:"February 2027",theme:"Start talking",test:"The conversation with a hiring manager happened",miss:"Have it in the first week of March. Do not let it slide twice.",start:"2027-02-01",end:"2027-02-28"},
+ {k:"mar",label:"March 2027",theme:"Volume — applications",test:"Four or more real phone screens completed",miss:"The funnel is the problem, not your skills. Rewrite the resume, go referral-only.",start:"2027-03-01",end:"2027-03-31"},
+ {k:"apr",label:"April 2027",theme:"Close it",test:"A signed offer",miss:"Use the diagnosis table in the plan, then run eight focused weeks.",start:"2027-04-01",end:"2027-04-30"}
 ];
+const TRACKS={algo:"Algorithms",proj:"Project",design:"System design",access:"Access",story:"Story",check:"Checkpoint"};
+const T=[
+ ["n1","nov","algo","Eight problems — arrays and hashing","Commit every solution to a public repo with pytest. The contribution graph is part of the deliverable.","2026-11-07"],
+ ["n2","nov","proj","Drill Python interview idioms","defaultdict, Counter, heapq, bisect, sort keys, slicing, comprehensions, f-strings, enumerate, zip. Write them out; do not read about them.","2026-11-07"],
+ ["n3","nov","proj","Set up the public solutions repo","GitHub, pytest, a commit per solved problem.","2026-11-07"],
+ ["n4","nov","algo","Eight problems — two pointers and sliding window","","2026-11-14"],
+ ["n5","nov","proj","Write the README before any code","playback-config-service. The design doc is the artifact you will actually talk about in interviews.","2026-11-14"],
+ ["n6","nov","algo","Eight problems — stack and binary search","","2026-11-21"],
+ ["n7","nov","proj","Scaffold the service, green CI","FastAPI, Docker, pytest, GitHub Actions on every push. One endpoint returning hardcoded JSON with a passing test. Green CI is the milestone, not the endpoint.","2026-11-21"],
+ ["n8","nov","algo","Six problems — linked lists, intro to trees","","2026-11-28"],
+ ["n9","nov","algo","Cold re-solve of the month's four hardest","No looking. First test of whether you are solving or watching.","2026-11-29"],
+ ["n10","nov","access","Write the target list","Twenty companies hiring backend SWE II. Next to each, note anyone you know there or one step removed.","2026-11-30"],
+ ["n11","nov","access","List the people who could refer you","Past colleagues, classmates, friends of friends. Names only for now; outreach starts in December.","2026-11-30"],
+ ["n12","nov","check","November bar: 30 problems, fluent Python, green CI, target list written","If the first two are false, repeat November instead of starting December.","2026-11-30"],
+ ["d1","dec","algo","25 problems — trees and graphs","Traversal recursive and iterative, BFS and DFS on a grid, islands, course schedule, clone graph. Write the BFS template from memory until it is automatic.","2026-12-31"],
+ ["d2","dec","algo","Heaps in the last week","heapq, top-K, merge k sorted lists. Short topic, high interview frequency.","2026-12-31"],
+ ["d3","dec","proj","Real data layer","PostgreSQL in Docker Compose, your schema, SQLAlchemy models, Alembic migrations.","2026-12-31"],
+ ["d4","dec","proj","Entitlement logic, with edge cases","Plan tier, territory, availability window. Tests cover expired window, wrong territory, missing entitlement.","2026-12-31"],
+ ["d5","dec","proj","Three design decisions written into the README","Why this schema shape, why this index, why this failure mode is acceptable. Two or three sentences each.","2026-12-31"],
+ ["d6","dec","access","Two conversations with working backend engineers","Fifteen minutes each. Not interviews, not asks — ask about their work.","2026-12-31"],
+ ["d7","dec","check","December bar: 55 cumulative problems, BFS/DFS from memory, service answers from Postgres","Missing the problem count by five is fine. Missing the data layer is not.","2026-12-31"],
+ ["j1","jan","proj","Deploy it","ECS Fargate or App Runner, RDS, ElastiCache — all through Terraform or CDK, no console clicks.","2027-01-31"],
+ ["j2","jan","proj","Redis cache on the hot read path","Single-flight protection so a cold-cache spike does not stampede the database.","2027-01-31"],
+ ["j3","jan","proj","Load-test and write the numbers down","k6 or Locust. RPS, p50, p99, error rate, what fell over first and at what load. The most valuable 200 words in your application.","2027-01-31"],
+ ["j4","jan","design","Four designs, one method, eight hours","Clarify scale, sketch the API, design the data model, scale it out, name the bottleneck. URL shortener, rate limiter, news feed, playback config service.","2027-01-31"],
+ ["j5","jan","algo","20 problems — 1-D DP and backtracking","Skip 2-D DP; poor return per hour at this level.","2027-01-31"],
+ ["j6","jan","story","Rewrite the resume around the deployed service","Selected work at the top with the URL and three lines of numbers. Update LinkedIn. One engineer you trust reads it.","2027-01-31"],
+ ["j7","jan","access","Get one pull request merged in an open-source repo","However small — a fix, a script, a docs correction. It moves you from wants-to-be to has-shipped.","2027-02-28"],
+ ["j8","jan","check","January bar: a URL you can send someone, with load-test numbers","If the deploy slips, cut the problem count to ten and finish the deploy.","2027-01-31"],
+ ["f1","feb","access","Have one real hiring-manager conversation","Last week of February. Four years, Python and AWS, here is the deployed service and its design doc, I want to work on backend, what does the path look like. Then stop talking.","2027-02-28"],
+ ["f2","feb","proj","Port the API layer to TypeScript and Node","Three Saturdays, about twelve hours. Express or NestJS, same endpoints, same tests, deployed. Same repo, second service.","2027-02-28"],
+ ["f3","feb","design","Six mock interviews, out loud","Two coding, two system design, two behavioral. You will be bad at these in February — that is why they are in February.","2027-02-28"],
+ ["f4","feb","algo","20 mixed problems, no topic labels","25 minutes on the clock, then look at the solution regardless.","2027-02-28"],
+ ["f5","feb","access","First ten applications","Not because you are ready. Rejection in February is free.","2027-02-28"],
+ ["f6","feb","check","February bar: the manager conversation actually happened","If every other box is ticked and this one is not, February failed.","2027-02-28"],
+ ["m1","mar","access","Forty applications, ten a week","At least fifteen with a referral. Five minutes per application looking for a route in.","2027-03-31"],
+ ["m2","mar","access","Sequence the loops on purpose","First two onsites go to companies you would accept but are not excited about. Your top three go in the last third.","2027-03-31"],
+ ["m3","mar","story","Write and rehearse the eight stories","Situation, task, action, result. Ninety seconds each, out loud, no notes. Six from the engineering years, two from these six months.","2027-03-31"],
+ ["m4","mar","design","Ten mock interviews","Sixteen cumulative.","2027-03-31"],
+ ["m5","mar","design","Ten hours of design on likely problems","Playback config, telemetry ingestion, notifications, rate limiter, API gateway. Draw each in four minutes and name the bottleneck.","2027-03-31"],
+ ["m6","mar","algo","Ten maintenance problems","Half the time re-solving old ones cold. Preserving recall, not expanding coverage.","2027-03-31"],
+ ["m7","mar","check","March bar: four or more real phone screens, every interview debriefed","Debrief within the hour: what was asked, what you fumbled, what you would say differently.","2027-03-31"],
+ ["a1","apr","access","Twenty more applications","Stop applying when you have signed something, not when you reach an onsite.","2027-04-30"],
+ ["a2","apr","algo","Maintenance only","A problem most mornings, one design a week, stories stay warm.","2027-04-30"],
+ ["a3","apr","story","Negotiate deliberately","Never name a number first. Always ask for a week. A competing offer is the only reliable lever.","2027-04-30"],
+ ["a4","apr","access","Go back to your top choice with the offer in hand","Straightforward, not a threat: you would rather join them, here is what you have, here is when you need to decide.","2027-04-30"],
+ ["a5","apr","check","April bar: a signed offer","No offer is not failure. Diagnose by where the funnel stopped, then run eight focused weeks.","2027-04-30"]
+];
+const TASKS=T.map(r=>({id:r[0],m:r[1],track:r[2],title:r[3],detail:r[4],due:r[5],key:r[2]==="check"}));
+const COUNTERS=[
+ {id:"problems",label:"Problems solved",target:120,hint:"Counted from the problem list — solved, not watched"},
+ {id:"applications",label:"Applications sent",target:70,hint:"10 Feb · 40 Mar · 20 Apr"},
+ {id:"mocks",label:"Mock interviews",target:30,hint:"Out loud, with a human where possible"}
+];
+const STATUSES=[["todo","To do"],["doing","In progress"],["done","Done"]];
 
-const KEY='crunchyroll-tracker-v1';
-let state={};
-try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){state={}}
+/* NeetCode-style list, 120 problems, cut to the months' topics. */
+const PG=[
+ {m:"nov",label:"Week 1 · Arrays and hashing",items:[
+  ["Contains Duplicate","E","contains-duplicate"],["Valid Anagram","E","valid-anagram"],["Two Sum","E","two-sum"],
+  ["Group Anagrams","M","group-anagrams"],["Top K Frequent Elements","M","top-k-frequent-elements"],
+  ["Product of Array Except Self","M","product-of-array-except-self"],["Valid Sudoku","M","valid-sudoku"],
+  ["Longest Consecutive Sequence","M","longest-consecutive-sequence"]]},
+ {m:"nov",label:"Week 2 · Two pointers and sliding window",items:[
+  ["Valid Palindrome","E","valid-palindrome"],["Two Sum II","M","two-sum-ii-input-array-is-sorted"],
+  ["3Sum","M","3sum"],["Container With Most Water","M","container-with-most-water"],
+  ["Best Time to Buy and Sell Stock","E","best-time-to-buy-and-sell-stock"],
+  ["Longest Substring Without Repeating Characters","M","longest-substring-without-repeating-characters"],
+  ["Longest Repeating Character Replacement","M","longest-repeating-character-replacement"],
+  ["Permutation in String","M","permutation-in-string"]]},
+ {m:"nov",label:"Week 3 · Stack and binary search",items:[
+  ["Valid Parentheses","E","valid-parentheses"],["Min Stack","M","min-stack"],
+  ["Evaluate Reverse Polish Notation","M","evaluate-reverse-polish-notation"],["Daily Temperatures","M","daily-temperatures"],
+  ["Binary Search","E","binary-search"],["Search a 2D Matrix","M","search-a-2d-matrix"],
+  ["Koko Eating Bananas","M","koko-eating-bananas"],["Find Minimum in Rotated Sorted Array","M","find-minimum-in-rotated-sorted-array"]]},
+ {m:"nov",label:"Week 4 · Linked lists, first trees",items:[
+  ["Reverse Linked List","E","reverse-linked-list"],["Merge Two Sorted Lists","E","merge-two-sorted-lists"],
+  ["Linked List Cycle","E","linked-list-cycle"],["Reorder List","M","reorder-list"],
+  ["Remove Nth Node From End of List","M","remove-nth-node-from-end-of-list"],["Invert Binary Tree","E","invert-binary-tree"]]},
+ {m:"dec",label:"Trees",items:[
+  ["Maximum Depth of Binary Tree","E","maximum-depth-of-binary-tree"],["Diameter of Binary Tree","E","diameter-of-binary-tree"],
+  ["Balanced Binary Tree","E","balanced-binary-tree"],["Same Tree","E","same-tree"],
+  ["Subtree of Another Tree","E","subtree-of-another-tree"],["Lowest Common Ancestor of a BST","M","lowest-common-ancestor-of-a-binary-search-tree"],
+  ["Binary Tree Level Order Traversal","M","binary-tree-level-order-traversal"],["Binary Tree Right Side View","M","binary-tree-right-side-view"],
+  ["Count Good Nodes in Binary Tree","M","count-good-nodes-in-binary-tree"],["Validate Binary Search Tree","M","validate-binary-search-tree"],
+  ["Kth Smallest Element in a BST","M","kth-smallest-element-in-a-bst"],
+  ["Construct Binary Tree from Preorder and Inorder","M","construct-binary-tree-from-preorder-and-inorder-traversal"]]},
+ {m:"dec",label:"Graphs — write the BFS template from memory",items:[
+  ["Number of Islands","M","number-of-islands"],["Clone Graph","M","clone-graph"],
+  ["Max Area of Island","M","max-area-of-island"],["Pacific Atlantic Water Flow","M","pacific-atlantic-water-flow"],
+  ["Surrounded Regions","M","surrounded-regions"],["Rotting Oranges","M","rotting-oranges"],
+  ["Course Schedule","M","course-schedule"],["Course Schedule II","M","course-schedule-ii"],
+  ["Find if Path Exists in Graph","E","find-if-path-exists-in-graph"]]},
+ {m:"dec",label:"Heaps — last week of December",items:[
+  ["Kth Largest Element in a Stream","E","kth-largest-element-in-a-stream"],["Last Stone Weight","E","last-stone-weight"],
+  ["K Closest Points to Origin","M","k-closest-points-to-origin"],["Merge k Sorted Lists","H","merge-k-sorted-lists"]]},
+ {m:"jan",label:"One-dimensional dynamic programming",items:[
+  ["Climbing Stairs","E","climbing-stairs"],["Min Cost Climbing Stairs","E","min-cost-climbing-stairs"],
+  ["House Robber","M","house-robber"],["House Robber II","M","house-robber-ii"],
+  ["Longest Palindromic Substring","M","longest-palindromic-substring"],["Palindromic Substrings","M","palindromic-substrings"],
+  ["Decode Ways","M","decode-ways"],["Coin Change","M","coin-change"],
+  ["Maximum Product Subarray","M","maximum-product-subarray"],["Word Break","M","word-break"]]},
+ {m:"jan",label:"Backtracking",items:[
+  ["Subsets","M","subsets"],["Combination Sum","M","combination-sum"],["Permutations","M","permutations"],
+  ["Subsets II","M","subsets-ii"],["Combination Sum II","M","combination-sum-ii"],["Word Search","M","word-search"],
+  ["Palindrome Partitioning","M","palindrome-partitioning"],["Letter Combinations of a Phone Number","M","letter-combinations-of-a-phone-number"],
+  ["Generate Parentheses","M","generate-parentheses"],["N-Queens","H","n-queens"]]},
+ {m:"feb",label:"Mixed · 25 minutes on the clock, no topic label first",items:[
+  ["Minimum Window Substring","H","minimum-window-substring"],["Car Fleet","M","car-fleet"],
+  ["Largest Rectangle in Histogram","H","largest-rectangle-in-histogram"],["Search in Rotated Sorted Array","M","search-in-rotated-sorted-array"],
+  ["Time Based Key-Value Store","M","time-based-key-value-store"],["LRU Cache","M","lru-cache"],
+  ["Copy List with Random Pointer","M","copy-list-with-random-pointer"],["Add Two Numbers","M","add-two-numbers"],
+  ["Find the Duplicate Number","M","find-the-duplicate-number"],["Merge Intervals","M","merge-intervals"],
+  ["Insert Interval","M","insert-interval"],["Non-overlapping Intervals","M","non-overlapping-intervals"],
+  ["Minimum Number of Arrows to Burst Balloons","M","minimum-number-of-arrows-to-burst-balloons"],
+  ["Longest Increasing Subsequence","M","longest-increasing-subsequence"],["Partition Equal Subset Sum","M","partition-equal-subset-sum"],
+  ["Jump Game","M","jump-game"],["Gas Station","M","gas-station"],["Hand of Straights","M","hand-of-straights"],
+  ["Implement Trie (Prefix Tree)","M","implement-trie-prefix-tree"],
+  ["Design Add and Search Words Data Structure","M","design-add-and-search-words-data-structure"]]},
+ {m:"mar",label:"Five new — the other five are cold re-solves you pick",items:[
+  ["Word Search II","H","word-search-ii"],["Network Delay Time","M","network-delay-time"],
+  ["Min Cost to Connect All Points","M","min-cost-to-connect-all-points"],["Reorganize String","M","reorganize-string"],
+  ["Design Twitter","M","design-twitter"]]},
+ {m:"apr",label:"Maintenance — a problem most mornings",items:[
+  ["Trapping Rain Water","H","trapping-rain-water"],["Sliding Window Maximum","H","sliding-window-maximum"],
+  ["Serialize and Deserialize Binary Tree","H","serialize-and-deserialize-binary-tree"],["Word Ladder","H","word-ladder"],
+  ["Reconstruct Itinerary","H","reconstruct-itinerary"],["Find Median from Data Stream","H","find-median-from-data-stream"],
+  ["Task Scheduler","M","task-scheduler"],["Rotate Image","M","rotate-image"],["Spiral Matrix","M","spiral-matrix"],
+  ["Set Matrix Zeroes","M","set-matrix-zeroes"],["Accounts Merge","M","accounts-merge"],["Redundant Connection","M","redundant-connection"],
+  ["Unique Paths","M","unique-paths"],["Longest Common Subsequence","M","longest-common-subsequence"],
+  ["Maximum Subarray","M","maximum-subarray"],["Kth Largest Element in an Array","M","kth-largest-element-in-an-array"],
+  ["Binary Tree Maximum Path Sum","H","binary-tree-maximum-path-sum"],["Cheapest Flights Within K Stops","M","cheapest-flights-within-k-stops"],
+  ["Swim in Rising Water","H","swim-in-rising-water"],["Edit Distance","M","edit-distance"]]}
+];
+const DIFF={E:"Easy",M:"Medium",H:"Hard"};
+const PTOTAL=PG.reduce((n,g)=>n+g.items.length,0);
 
-const root=document.getElementById('sections');
-let total=0;
+let state={tasks:{},problems:{},counters:{problems:0,applications:0,mocks:0}};
+let db=null,docRef=null,view="dash",filter="all",saveTimer=null,saving=false,pending=false,writable=true,dirty=false;
 
-SECTIONS.forEach((s,si)=>{
-  const sec=document.createElement('section');
-  const done=s.items.filter((_,ii)=>state[si+'-'+ii]).length;
-  total+=s.items.length;
-  sec.innerHTML=`
-    <div class="sec" style="--accent:${s.accent}">
-      <div class="sec-head">
-        <div class="sec-num">${s.num}</div>
-        <div class="sec-title">
-          <h2>${s.title}</h2>
-          <div class="why">${s.why}</div>
-          <div class="badges">${s.badges.map(b=>`<span class="badge ${b[0]}">${b[1]}</span>`).join('')}</div>
-        </div>
-        <div class="sec-prog">
-          <div class="bar mini"><i id="bar-${si}" style="width:${done/s.items.length*100}%"></i></div>
-          <span id="cnt-${si}">${done}/${s.items.length}</span>
-        </div>
-      </div>
-      <ul class="items" id="list-${si}"></ul>
-    </div>`;
-  root.appendChild(sec);
-  const ul=sec.querySelector('#list-'+si);
-  s.items.forEach((it,ii)=>{
-    const id=si+'-'+ii;
-    const li=document.createElement('li');
-    li.className='item'+(state[id]?' done':'');
-    li.innerHTML=`
-      <span class="node"></span>
-      <span class="txt"><span class="t">${it[0]}</span><div class="d">${it[1]}</div></span>
-      ${it[2]?`<span class="tag ${it[2]}">${it[2]==='head'?'head start':it[2]}</span>`:''}`;
-    li.addEventListener('click',()=>{
-      state[id]=!state[id];
-      li.classList.toggle('done',state[id]);
-      localStorage.setItem(KEY,JSON.stringify(state));
-      updateSection(si);updateOverall();
-    });
-    ul.appendChild(li);
-  });
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const st=id=>(state.tasks[id]&&state.tasks[id].status)||"todo";
+const ps=id=>state.problems[id]||"none";
+const psolved=()=>Object.keys(state.problems).filter(k=>state.problems[k]!=="none").length;
+const pcold=()=>Object.keys(state.problems).filter(k=>state.problems[k]==="cold").length;
+const note=id=>(state.tasks[id]&&state.tasks[id].note)||"";
+const today=()=>new Date();
+const dfmt=s=>{const d=new Date(s+"T12:00:00");return d.toLocaleDateString(undefined,{month:"short",day:"numeric"});};
+const overdue=t=>st(t.id)!=="done"&&new Date(t.due+"T23:59:59")<today();
+
+function setSync(s,txt){const e=$("#sync");e.dataset.s=s;e.textContent=txt;}
+
+const STORE_KEY="offer-by-april:v1:public";
+function loadLocal(){
+  try{
+    const raw=localStorage.getItem(STORE_KEY);
+    if(!raw)return;
+    const d=JSON.parse(raw)||{};
+    state.tasks=d.tasks||{};
+    state.problems=d.problems||{};
+    state.counters=Object.assign({problems:0,applications:0,mocks:0},d.counters||{});
+  }catch(e){}
+}
+function queueSave(){
+  setSync("saving","saving…");
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(flush,200);
+}
+function flush(){
+  try{
+    localStorage.setItem(STORE_KEY,JSON.stringify({tasks:state.tasks,problems:state.problems,counters:state.counters,updated:new Date().toISOString()}));
+    setSync("ok","saved on this device");
+  }catch(e){
+    setSync("off","not saved");
+    showBanner("This browser is blocking storage, so progress will not be kept after you close the page. Use Export progress to keep a copy.");
+  }
+}
+function exportProgress(){
+  const data=JSON.stringify({tasks:state.tasks,problems:state.problems,counters:state.counters,exported:new Date().toISOString()},null,2);
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));
+  a.download="offer-by-april-progress.json";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function importProgress(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      if(!d||typeof d!=="object"||(!d.tasks&&!d.problems))throw new Error("bad");
+      state.tasks=d.tasks||{};
+      state.problems=d.problems||{};
+      state.counters=Object.assign({problems:0,applications:0,mocks:0},d.counters||{});
+      flush();render();
+      showBanner("Progress imported.");
+      setTimeout(()=>{$("#banner").hidden=true;},4000);
+    }catch(e){showBanner("That file is not a progress export from this tracker.");}
+  };
+  r.readAsText(file);
+}
+function showBanner(t){const b=$("#banner");b.textContent=t;b.hidden=false;}
+
+function setStatus(id,s){
+  const cur=state.tasks[id]||{};
+  if(cur.status===s)return;
+  state.tasks[id]=Object.assign({},cur,{status:s});
+  queueSave();render();
+}
+function setNote(id,v){
+  const cur=state.tasks[id]||{};
+  if((cur.note||"")===v)return;
+  state.tasks[id]=Object.assign({},cur,{note:v});
+  queueSave();
+}
+function cycleProblem(id){
+  const next={none:"solved",solved:"cold",cold:"none"}[ps(id)];
+  if(next==="none")delete state.problems[id];else state.problems[id]=next;
+  queueSave();renderProblems();
+}
+function setCounter(id,v){
+  v=Math.max(0,Math.min(9999,Math.round(v||0)));
+  if(state.counters[id]===v)return;
+  state.counters[id]=v;queueSave();renderCounters();
+}
+
+/* ---------- dashboard ---------- */
+function monthStats(k){
+  const list=TASKS.filter(t=>t.m===k);
+  const done=list.filter(t=>st(t.id)==="done").length;
+  return{done:done,total:list.length,pct:list.length?Math.round(done/list.length*100):0};
+}
+function currentMonth(){
+  const n=today();
+  for(const m of MONTHS){if(n<=new Date(m.end+"T23:59:59"))return m.k;}
+  return MONTHS[MONTHS.length-1].k;
+}
+function renderDash(){
+  const done=TASKS.filter(t=>st(t.id)==="done").length;
+  const pct=Math.round(done/TASKS.length*100);
+  const C=2*Math.PI*52;
+  $("#ringfill").setAttribute("stroke-dashoffset",String(C*(1-pct/100)));
+  $("#ringpct").textContent=pct+"%";
+  $("#ringsub").textContent=done+" of "+TASKS.length;
+
+  const end=new Date("2027-04-30T23:59:59"),start=new Date("2026-11-02T00:00:00");
+  const days=Math.max(0,Math.ceil((end-today())/864e5));
+  const wk=Math.min(26,Math.max(1,Math.floor((today()-start)/6048e5)+1));
+  const cm=MONTHS.find(m=>m.k===currentMonth());
+  const over=TASKS.filter(overdue).length;
+  $("#sub").textContent="SWE II backend · "+cm.label;
+  $("#heroline").textContent=cm.label+" — "+cm.theme.toLowerCase();
+  $("#facts").innerHTML=[
+    ["Week",wk+" of 26"],["Days to 30 Apr",days],
+    ["In progress",TASKS.filter(t=>st(t.id)==="doing").length],
+    ["Past due",over]
+  ].map(f=>'<div class="fact"><b class="mono">'+esc(f[1])+"</b>"+esc(f[0])+"</div>").join("");
+
+  $("#months").innerHTML=MONTHS.map(m=>{
+    const s=monthStats(m.k);
+    return '<div class="mcard'+(m.k===cm.k?" now":"")+'">'+
+      '<div class="mhead"><h4>'+esc(m.label)+'</h4><span class="pct">'+s.done+"/"+s.total+'</span></div>'+
+      '<div class="theme">'+esc(m.theme)+'</div>'+
+      '<div class="bar-track"><div class="bar-fill" style="width:'+s.pct+'%"></div></div>'+
+      '<div class="test"><span>The one test</span>'+esc(m.test)+'</div></div>';
+  }).join("");
+  renderCounters();
+}
+function renderCounters(){
+  $("#counters").innerHTML=COUNTERS.map(c=>{
+    const auto=c.id==="problems";
+    const v=auto?psolved():(state.counters[c.id]||0),p=Math.min(100,Math.round(v/c.target*100));
+    return '<div class="ctr"><h4>'+esc(c.label)+'</h4>'+
+      '<div class="top"><span class="n">'+v+'</span><span class="of">/ '+c.target+'</span></div>'+
+      '<div class="bar-track"><div class="bar-fill" style="width:'+p+'%"></div></div>'+
+      '<div class="hint">'+esc(c.hint)+'</div>'+
+      (auto
+        ? '<div class="steps"><button data-goprob="1" style="border:1px solid var(--line);border-radius:7px;padding:3px 10px;font-size:12px">Open the problem list ›</button></div>'
+        : '<div class="steps"><button data-ctr="'+c.id+'" data-d="-1" aria-label="Subtract one">−</button>'+
+          '<input id="ctr-'+c.id+'" type="number" min="0" value="'+v+'" aria-label="'+esc(c.label)+'">'+
+          '<button data-ctr="'+c.id+'" data-d="1" aria-label="Add one">+</button></div>')+
+      '</div>';
+  }).join("");
+}
+
+/* ---------- board ---------- */
+function renderBoard(){
+  $("#filters").innerHTML=['<button data-f="all" aria-pressed="'+(filter==="all")+'">All months</button>']
+    .concat(MONTHS.map(m=>'<button data-f="'+m.k+'" aria-pressed="'+(filter===m.k)+'">'+esc(m.label.split(" ")[0])+"</button>")).join("");
+  const list=TASKS.filter(t=>filter==="all"||t.m===filter);
+  $("#cols").innerHTML=STATUSES.map(([s,label])=>{
+    const items=list.filter(t=>st(t.id)===s);
+    return '<div class="col" data-col="'+s+'"><h4>'+label+'<span>'+items.length+'</span></h4><div class="col-list">'+
+      (items.length?items.map(cardHTML).join(""):'<div class="empty">Nothing here.</div>')+'</div></div>';
+  }).join("");
+}
+function cardHTML(t){
+  const i=STATUSES.findIndex(s=>s[0]===st(t.id));
+  return '<div class="card" draggable="true" data-id="'+t.id+'">'+
+    '<div class="t">'+esc(t.title)+'</div>'+
+    '<div class="meta"><span class="chip'+(t.key?" key":"")+'">'+esc(TRACKS[t.track])+'</span>'+
+    '<span class="chip due'+(overdue(t)?" past":"")+'">'+dfmt(t.due)+'</span>'+
+    '<span class="move"><button data-mv="'+t.id+'" data-dir="-1" '+(i===0?"disabled":"")+' aria-label="Move left">‹</button>'+
+    '<button data-mv="'+t.id+'" data-dir="1" '+(i===2?"disabled":"")+' aria-label="Move right">›</button></span></div></div>';
+}
+
+/* ---------- checklist ---------- */
+function renderList(){
+  $("#listbody").innerHTML=MONTHS.map(m=>{
+    const s=monthStats(m.k);
+    const rows=TASKS.filter(t=>t.m===m.k).map(t=>{
+      const s2=st(t.id),n=note(t.id);
+      return '<div class="row '+s2+'" data-row="'+t.id+'">'+
+        '<input class="cb" type="checkbox" id="cb-'+t.id+'" '+(s2==="done"?"checked":"")+' aria-label="'+esc(t.title)+'">'+
+        '<div class="rbody"><div class="rtitle">'+esc(t.title)+'</div>'+
+        (t.detail?'<div class="rdetail">'+esc(t.detail)+'</div>':"")+
+        '<div class="rmeta"><span class="chip'+(t.key?" key":"")+'">'+esc(TRACKS[t.track])+'</span>'+
+        '<span class="chip due'+(overdue(t)?" past":"")+'">due '+dfmt(t.due)+'</span>'+
+        (s2!=="done"?'<button class="link" data-doing="'+t.id+'">'+(s2==="doing"?"Back to to-do":"Mark in progress")+'</button>':"")+
+        '<button class="link'+(n?" hasnote":"")+'" data-note="'+t.id+'">'+(n?"Notes ·":"Add note")+(n?" "+esc(n.slice(0,28))+(n.length>28?"…":""):"")+'</button></div>'+
+        '<div class="notewrap" hidden><div class="notelabel">Notes</div><textarea class="note" id="nt-'+t.id+'" placeholder="What you actually did, what you skipped, what to carry forward.">'+esc(n)+'</textarea></div>'+
+        '</div></div>';
+    }).join("");
+    return '<div class="msec"><h4>'+esc(m.label)+' <span class="pct">'+s.done+" of "+s.total+'</span></h4>'+
+      '<div class="theme" style="font-size:13px;color:var(--muted)">'+esc(m.theme)+' — if you miss the test: '+esc(m.miss)+'</div>'+
+      '<div class="rows">'+rows+'</div></div>';
+  }).join("");
+}
+
+/* ---------- problems ---------- */
+function renderProblems(){
+  const done=psolved(),cold=pcold();
+  $("#psum").innerHTML='<div class="psum-stats">'+
+    '<div><b class="mono">'+done+'</b><span>of '+PTOTAL+' solved</span></div>'+
+    '<div><b class="mono">'+cold+'</b><span>re-solved cold</span></div>'+
+    '<div class="bar-track" style="flex:1;min-width:140px"><div class="bar-fill" style="width:'+Math.round(done/PTOTAL*100)+'%"></div></div>'+
+    '</div><p class="psum-note">Tap anywhere on a problem to mark it. Once when you have solved it yourself and it passed; again when you have re-solved it cold a month later — that second mark is the one that means you actually know it. Tapping the title opens the problem instead.</p>'+
+    '<div class="legend"><span><i></i>Not yet</span><span><i class="s">✓</i>Solved</span><span><i class="c">✓✓</i>Re-solved cold</span></div>';
+
+  $("#probbody").innerHTML=MONTHS.map(m=>{
+    const gs=PG.map((g,gi)=>[g,gi]).filter(p=>p[0].m===m.k);
+    if(!gs.length)return"";
+    const n=gs.reduce((a,p)=>a+p[0].items.length,0);
+    const d=gs.reduce((a,p)=>a+p[0].items.filter((_,i)=>ps("g"+p[1]+"-"+i)!=="none").length,0);
+    return '<div class="msec"><h4>'+esc(m.label)+' <span class="pct">'+d+" of "+n+'</span></h4>'+
+      gs.map(p=>{
+        const g=p[0],gi=p[1];
+        return '<div class="pgroup"><div class="plabel">'+esc(g.label)+'</div><div class="rows">'+
+          g.items.map((it,i)=>{
+            const id="g"+gi+"-"+i,s=ps(id);
+            return '<div class="prow '+s+'" data-p="'+id+'">'+
+              '<button class="pstate" data-p="'+id+'" aria-label="'+esc(it[0])+' — '+(s==="none"?"not solved":s==="solved"?"solved":"re-solved cold")+'">'+
+              (s==="cold"?"✓✓":s==="solved"?"✓":"")+'</button>'+
+              '<a class="ptitle" href="https://leetcode.com/problems/'+it[2]+'/" target="_blank" rel="noopener">'+esc(it[0])+'</a>'+
+              '<span class="chip diff d'+it[1]+'">'+DIFF[it[1]]+'</span></div>';
+          }).join("")+'</div></div>';
+      }).join("")+'</div>';
+  }).join("");
+}
+
+function render(){
+  $("#view-dash").hidden=view!=="dash";
+  $("#view-board").hidden=view!=="board";
+  $("#view-list").hidden=view!=="list";
+  $("#view-prob").hidden=view!=="prob";
+  if(view==="dash")renderDash();
+  if(view==="board")renderBoard();
+  if(view==="list")renderList();
+  if(view==="prob")renderProblems();
+}
+function goto(v){
+  view=v;
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.view===v)));
+  render();window.scrollTo(0,0);
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",e=>{
+  if(e.target.closest("#btn-export")){exportProgress();return;}
+  if(e.target.closest("#btn-import")){$("#file-import").click();return;}
+  const tab=e.target.closest(".tabs button");
+  if(tab){goto(tab.dataset.view);return;}
+  if(e.target.closest("[data-goprob]")){goto("prob");return;}
+  if(e.target.closest(".ptitle"))return;
+  const pb=e.target.closest("[data-p]");
+  if(pb){cycleProblem(pb.dataset.p);return;}
+  const f=e.target.closest("#filters button");
+  if(f){filter=f.dataset.f;renderBoard();return;}
+  const mv=e.target.closest("[data-mv]");
+  if(mv){const i=STATUSES.findIndex(s=>s[0]===st(mv.dataset.mv));setStatus(mv.dataset.mv,STATUSES[Math.max(0,Math.min(2,i+Number(mv.dataset.dir)))][0]);return;}
+  const ct=e.target.closest("[data-ctr]");
+  if(ct){setCounter(ct.dataset.ctr,(state.counters[ct.dataset.ctr]||0)+Number(ct.dataset.d));return;}
+  const dg=e.target.closest("[data-doing]");
+  if(dg){setStatus(dg.dataset.doing,st(dg.dataset.doing)==="doing"?"todo":"doing");return;}
+  const nb=e.target.closest("[data-note]");
+  if(nb){const w=nb.closest(".rbody").querySelector(".notewrap");w.hidden=!w.hidden;if(!w.hidden)w.querySelector("textarea").focus();return;}
+});
+document.addEventListener("change",e=>{
+  if(e.target.id==="file-import"){if(e.target.files[0])importProgress(e.target.files[0]);e.target.value="";return;}
+  if(e.target.classList.contains("cb")){
+    const id=e.target.closest("[data-row]").dataset.row;
+    setStatus(id,e.target.checked?"done":"todo");
+  }
+  if(e.target.id&&e.target.id.indexOf("ctr-")===0)setCounter(e.target.id.slice(4),Number(e.target.value));
+});
+document.addEventListener("input",e=>{
+  if(e.target.classList.contains("note")){
+    const id=e.target.closest("[data-row]").dataset.row;
+    setNote(id,e.target.value);
+  }
+});
+document.addEventListener("dragstart",e=>{
+  const c=e.target.closest(".card");if(!c)return;
+  c.classList.add("dragging");e.dataTransfer.setData("text/plain",c.dataset.id);e.dataTransfer.effectAllowed="move";
+});
+document.addEventListener("dragend",e=>{const c=e.target.closest(".card");if(c)c.classList.remove("dragging");});
+document.addEventListener("dragover",e=>{const col=e.target.closest(".col");if(!col)return;e.preventDefault();col.classList.add("over");});
+document.addEventListener("dragleave",e=>{const col=e.target.closest(".col");if(col&&!col.contains(e.relatedTarget))col.classList.remove("over");});
+document.addEventListener("drop",e=>{
+  const col=e.target.closest(".col");if(!col)return;
+  e.preventDefault();col.classList.remove("over");
+  const id=e.dataTransfer.getData("text/plain");if(id)setStatus(id,col.dataset.col);
 });
 
-function updateSection(si){
-  const s=SECTIONS[si];
-  const done=s.items.filter((_,ii)=>state[si+'-'+ii]).length;
-  document.getElementById('bar-'+si).style.width=(done/s.items.length*100)+'%';
-  document.getElementById('cnt-'+si).textContent=done+'/'+s.items.length;
-}
-function updateOverall(){
-  let done=0;
-  SECTIONS.forEach((s,si)=>s.items.forEach((_,ii)=>{if(state[si+'-'+ii])done++}));
-  const pct=Math.round(done/total*100);
-  document.getElementById('overallPct').textContent=pct+'%';
-  document.getElementById('overallBar').style.width=pct+'%';
-  document.getElementById('overallCount').textContent=done+' / '+total+' objectives complete';
-}
-document.getElementById('resetBtn').addEventListener('click',()=>{
-  if(!confirm('Reset all progress?'))return;
-  state={};localStorage.removeItem(KEY);
-  document.querySelectorAll('li.item').forEach(li=>li.classList.remove('done'));
-  SECTIONS.forEach((_,si)=>updateSection(si));
-  updateOverall();
-});
-updateOverall();
+/* ---------- boot ---------- */
+loadLocal();
+render();
 </script>
+
 </body>
 </html>
